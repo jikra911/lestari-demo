@@ -1,0 +1,783 @@
+<meta charset="utf-8">
+<title>Lestari Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Noto+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#FFFFFF;--bg-end:#FFFFFF;--bg-grad:#FFFFFF;--glass:rgba(255,255,255,.92);
+  --surface:#FFFFFF;--surface-2:#F2F7F3;--ink:#14241C;--ink-2:#5A6B62;--line:#DCE7DF;
+  --brand:#2D6A4F;--brand-ink:#FFFFFF;--brand-soft:#D8F3DC;--brand-strong:#1B4332;
+  --g-brand:#2D6A4F;--g-hero:#2D6A4F;
+  --plum:#40916C;--plum-soft:#E8F5E9;
+  --sos:#B91C1C;--sos-ink:#FFFFFF;--sos-soft:#FEE2E2;
+  --safe:#15803D;--safe-soft:#DCFCE7;--fair:#A16207;--fair-soft:#FEF9C3;
+  --caution:#C2410C;--caution-soft:#FFEDD5;--risk:#B91C1C;--risk-soft:#FEE2E2;
+  --gold:#D4A017;--gold-soft:#FDF3D3;
+  --tint-pink:#F5FAF6;--tint-mint:#F5FAF6;--tint-lilac:#F5FAF6;--tint-orange:#F5FAF6;
+  --map-land:#EEF5EF;--map-road:#FFFFFF;--map-water:#CFE8F6;--map-park:#CDEBD1;
+  --stage:#FFFFFF;--bezel:#14241C;--shadow:0 10px 30px rgba(20,36,28,.12);
+  --card-shadow:0 1px 2px rgba(20,36,28,.05),0 2px 6px rgba(20,36,28,.05);
+  --font:'Noto Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --display:'Figtree','Noto Sans',system-ui,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{height:100%;zoom:.8}
+body{height:100%;margin:0;background:var(--stage);color:var(--ink);font:500 15px/1.45 var(--font);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+h1,h2,h3,p{margin:0}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ic.sm{width:16px;height:16px}.ic.lg{width:24px;height:24px}.ic.xl{width:32px;height:32px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+.stage{height:100%;display:flex;gap:28px;align-items:center;justify-content:center;padding:16px}
+.index{width:290px;max-height:100%;overflow:auto;background:var(--surface);border-radius:24px;padding:18px 14px;box-shadow:var(--shadow)}
+.index h2{font:600 24px/1.2 var(--display);padding:0 6px;color:var(--brand)}
+.index .sub{color:var(--ink-2);font-size:13px;padding:4px 6px 10px}
+.index h3{font:800 11px/1 var(--font);letter-spacing:.09em;text-transform:uppercase;color:var(--ink-2);padding:14px 6px 6px}
+.index .links{display:flex;flex-wrap:wrap;gap:4px}
+.index .links button{border:1.5px solid var(--line);background:transparent;border-radius:999px;padding:5px 10px;font-size:12.5px;font-weight:700;color:var(--ink)}
+.index .links button[aria-current="true"]{background:var(--g-brand);border-color:transparent;color:#fff}
+#idxBtn{display:none;position:fixed;top:calc(10px + env(safe-area-inset-top,0px));left:10px;z-index:60;border:0;border-radius:999px;background:var(--g-brand);color:#fff;padding:9px 14px;font-weight:800;box-shadow:var(--shadow)}
+.phone{width:392px;height:min(844px,100%);border:10px solid var(--bezel);border-radius:48px;background:var(--bg);position:relative;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(20,36,28,.22);flex:none}
+.status{height:30px;flex:none;display:flex;justify-content:space-between;align-items:center;padding:8px 26px 0;font-size:12.5px;font-weight:800;color:var(--ink)}
+.status i{display:flex;gap:5px;align-items:center;font-style:normal}
+#view:focus{outline:none}
+.view{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;position:relative;scrollbar-width:none;-ms-overflow-style:none}
+.view::-webkit-scrollbar{display:none}
+@media (max-width:860px){.index{display:none}#idxBtn{display:block}.index.open{display:block;position:fixed;inset:0;z-index:70;width:auto;max-height:none;border-radius:0}}
+@media (max-width:520px){.stage{padding:0}.phone{width:100%;height:100%;border:0;border-radius:0;box-shadow:none}}
+
+.pad{padding:8px 16px 24px}
+.stack{display:flex;flex-direction:column;gap:12px}
+.stack.lg{gap:20px}.stack.sm{gap:6px}
+.row{display:flex;align-items:center;gap:10px}
+.between{justify-content:space-between}
+.wrap{flex-wrap:wrap}
+.grow{flex:1;min-width:0;min-height:0}
+.h1{font:700 26px/1.15 var(--display);letter-spacing:-.01em;text-wrap:balance}
+.h2{font:700 19px/1.25 var(--display);letter-spacing:-.005em}
+.h3{font:800 15px/1.3 var(--font)}
+.muted{color:var(--ink-2)}
+.small{font-size:13px}.xs{font-size:12px}
+.eyebrow{font:800 11.5px/1 var(--font);letter-spacing:.09em;text-transform:uppercase;color:var(--ink-2)}
+.num{font-variant-numeric:tabular-nums}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:var(--card-shadow)}
+.card.flat{background:var(--surface-2);border-color:transparent;box-shadow:none}
+.hdr{display:flex;align-items:center;gap:8px;padding:6px 12px 6px 8px;position:sticky;top:0;background:var(--glass);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);z-index:5;min-height:52px}
+.hdr h1{font:700 18px/1.2 var(--display);flex:1;text-align:center;text-wrap:balance}
+.hdr-sp{width:48px;flex:none}
+.hdr.left h1{text-align:left}
+.ibtn{width:44px;height:44px;border:0;border-radius:999px;background:transparent;display:grid;place-items:center;color:var(--ink);flex:none}
+.ibtn:active{background:var(--surface-2)}
+.ibtn.solid{background:var(--surface);border:1px solid var(--line)}
+.sospill{height:36px;padding:0 13px;border:0;border-radius:999px;background:var(--brand);color:#fff;font-weight:800;font-size:12.5px;letter-spacing:.05em;display:flex;align-items:center;gap:5px;flex:none;box-shadow:0 4px 10px rgba(45,106,79,.35)}
+.btn{min-height:52px;border-radius:999px;border:1.5px solid transparent;padding:0 20px;font-weight:800;font-size:15.5px;display:flex;align-items:center;justify-content:center;gap:8px;width:100%;transition:transform .1s,filter .15s}
+.btn:active{transform:scale(.985)}
+.btn.primary{background:var(--brand);color:#fff;box-shadow:0 4px 12px rgba(45,106,79,.25)}
+.btn.soft{background:var(--brand-soft);color:var(--brand-strong)}
+.btn.ghost{background:var(--surface);border-color:var(--line);color:var(--ink)}
+.btn.dark{background:#14241C;color:#fff}
+.btn.sos{background:var(--sos);color:var(--sos-ink)}
+.btn.link{background:none;min-height:44px;color:var(--brand-strong);width:auto;padding:0 8px}
+.btn.sm{min-height:40px;font-size:14px;width:auto;padding:0 16px}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label,.lbl{font-weight:800;font-size:13.5px}
+.field input,.field select,.field textarea{min-height:50px;border:1.5px solid var(--line);background:var(--surface);border-radius:16px;padding:10px 16px;width:100%}
+.field textarea{min-height:92px;resize:vertical}
+.field .hint{font-size:12.5px;color:var(--ink-2)}
+.field .with-ic{position:relative}
+.field .with-ic .ic{position:absolute;left:15px;top:15px;color:var(--brand)}
+.field .with-ic input{padding-left:44px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:40px;padding:0 15px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);font-weight:700;font-size:14px;display:inline-flex;align-items:center;gap:6px}
+.chip[aria-pressed="true"]{background:var(--brand);border-color:transparent;color:#fff}
+.chips.scroll{flex-wrap:nowrap;overflow-x:auto;padding:2px 16px 6px;margin:0 -16px;scrollbar-width:none}
+.chips.scroll .chip{flex:none}
+.seg{display:flex;background:var(--surface-2);border-radius:999px;padding:4px;gap:4px}
+.seg button{flex:1;min-height:40px;border:0;border-radius:999px;background:transparent;font-weight:800;font-size:14px;color:var(--ink-2)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--brand-strong);box-shadow:0 1px 3px rgba(20,36,28,.14)}
+.badge{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 10px;border-radius:999px;font-size:12px;font-weight:800;background:var(--ts,var(--surface-2));color:var(--t,var(--ink))}
+.t-safe{--t:var(--safe);--ts:var(--safe-soft)}.t-fair{--t:var(--fair);--ts:var(--fair-soft)}
+.t-caution{--t:var(--caution);--ts:var(--caution-soft)}.t-risk{--t:var(--risk);--ts:var(--risk-soft)}
+.t-brand{--t:var(--brand-strong);--ts:var(--brand-soft)}.t-plum{--t:var(--plum);--ts:var(--plum-soft)}.t-mute{--t:var(--ink-2);--ts:var(--surface-2)}
+.t-gold{--t:#8A6A0F;--ts:var(--gold-soft)}
+.sticky-cta{position:sticky;bottom:0;background:linear-gradient(to top,var(--bg-end) 72%,transparent);padding:20px 16px 16px;display:flex;flex-direction:column;gap:8px;z-index:4}
+.list{display:flex;flex-direction:column}
+.li{display:flex;align-items:center;gap:12px;padding:12px 4px;border:0;border-bottom:1px solid var(--line);background:none;text-align:left;width:100%;min-height:56px}
+.li:last-child{border-bottom:0}
+.ico{width:40px;height:40px;border-radius:14px;background:var(--brand-soft);color:var(--brand-strong);display:grid;place-items:center;flex:none}
+.avatar{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:15px;flex:none;background:var(--brand-soft);color:var(--brand-strong)}
+.avatar.a2{background:var(--plum-soft);color:var(--plum)}.avatar.a3{background:var(--fair-soft);color:var(--fair)}.avatar.a4{background:var(--caution-soft);color:var(--caution)}
+.avatar.lg{width:76px;height:76px;font-size:26px;font-family:var(--display)}
+.toggle{width:52px;height:32px;border-radius:999px;border:0;background:var(--line);position:relative;flex:none;transition:background .15s}
+.toggle::after{content:"";position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .15s;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.toggle[aria-checked="true"]{background:var(--g-brand)}
+.toggle[aria-checked="true"]::after{transform:translateX(20px)}
+.toast{position:absolute;left:16px;right:16px;bottom:96px;background:#14241C;color:#fff;padding:12px 16px;border-radius:18px;font-weight:700;font-size:14px;z-index:40;box-shadow:var(--shadow);display:flex;gap:10px;align-items:center}
+.progress{display:flex;gap:6px;padding:4px 16px 0}
+.progress i{flex:1;height:6px;border-radius:9px;background:var(--line)}
+.progress i.on{background:var(--g-brand)}
+.note{display:flex;gap:10px;background:var(--surface-2);border-radius:16px;padding:12px 14px;font-size:13px;color:var(--ink-2)}
+.note .ic{margin-top:1px;color:var(--brand)}
+.note.warn{background:var(--fair-soft);color:var(--ink);box-shadow:none}.note.warn .ic{color:var(--fair)}
+.note.eco{background:var(--brand-soft);color:var(--ink)}.note.eco .ic{color:var(--brand-strong)}
+.note.gold{background:var(--gold-soft);color:var(--ink)}.note.gold .ic{color:#8A6A0F}
+
+.mascot{display:block;object-fit:contain;filter:drop-shadow(0 6px 10px rgba(20,36,28,.18))}
+.hero{position:relative;background:var(--g-hero);color:#fff;border-radius:24px;padding:44px 16px 18px;box-shadow:0 10px 24px rgba(45,106,79,.26)}
+.hero .mascot{position:absolute;right:-2px;top:-46px;width:118px;height:118px;pointer-events:none}
+.hero .eyebrow{color:rgba(255,255,255,.92)}
+.hero .btn.link{color:#fff}
+.tile-ic{width:56px;height:56px;border-radius:18px;display:grid;place-items:center}
+.tile-ic.g-pink,.tile-ic.g-lilac,.tile-ic.g-orange,.tile-ic.g-mint,.tile-ic.g-blue,.floater.sq.g-pink,.floater.sq.g-orange{background:var(--brand-soft);color:var(--brand-strong)}
+.tile-ic.g-red,.floater.sq.g-red{background:var(--sos);color:#fff}
+.tile-ic.g-gold{background:var(--gold-soft);color:#8A6A0F}
+.quick{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.quick button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:7px;font-weight:800;font-size:11.5px;color:var(--ink);padding:0;min-height:44px}
+.banner{position:relative;border-radius:22px;padding:16px;overflow:visible;background:var(--surface-2);color:var(--ink)}
+.banner .art{position:absolute;right:8px;top:8px;bottom:8px;width:44%;border-radius:20px;overflow:hidden}
+.blob{position:absolute;border-radius:50%;pointer-events:none}
+.stagebox{position:relative;display:grid;place-items:center;overflow:hidden}
+.floater{position:absolute;display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-weight:700;font-size:12.5px;box-shadow:var(--card-shadow);color:var(--ink)}
+.floater.sq{border-radius:16px;padding:0;width:44px;height:44px;justify-content:center;color:#fff}
+
+.tabbar{flex:none;display:grid;grid-template-columns:repeat(5,1fr);background:var(--surface);border-top:1px solid var(--line);padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px));position:relative;z-index:20}
+.tab{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:3px;min-height:52px;padding:4px 0;font-size:11.5px;font-weight:800;color:var(--ink-2)}
+.tab[aria-current="page"]{color:var(--brand-strong)}
+.tab[aria-current="page"] .ic{stroke-width:2.5}
+.tab.score{color:var(--brand-strong)}
+.tab.score .pl{width:54px;height:54px;border-radius:50%;background:var(--g-brand);color:#fff;display:grid;place-items:center;margin-top:-26px;border:4px solid var(--surface);box-shadow:0 6px 14px rgba(45,106,79,.4)}
+.fab{position:absolute;right:14px;bottom:88px;width:58px;height:58px;border-radius:50%;border:3px solid #fff;background:radial-gradient(circle at 30% 25%,#D4A017,#2D6A4F);color:#fff;font-weight:800;font-size:13px;letter-spacing:.05em;z-index:30;box-shadow:0 0 0 5px rgba(45,106,79,.22),0 10px 20px rgba(45,106,79,.45);display:grid;place-items:center}
+
+.ring{position:relative;flex:none}
+.ring svg{width:100%;height:100%;display:block}
+.ring-bg{fill:none;stroke:var(--line)}
+.ring-fg{fill:none;stroke:var(--t);stroke-linecap:round}
+.ring-n{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.ring-n b{font:700 40px/1 var(--display);color:var(--ring-ink,var(--ink))}
+.ring-n span{font-size:12px;color:var(--ring-ink2,var(--ink-2));margin-top:2px}
+.ring.sm .ring-n b{font-size:28px}
+.frow{display:grid;grid-template-columns:1fr auto;gap:5px 10px;align-items:center}
+.frow .nm{font-weight:700;font-size:14px}
+.frow .val{font-weight:800;font-size:14px}
+.bar{grid-column:1/-1;height:12px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:99px;background:var(--t)}
+.qbox{border-radius:22px;background:var(--surface);padding:14px 16px;color:var(--ink);font-size:14.5px;box-shadow:var(--card-shadow);position:relative}
+.qbox .eyebrow{color:var(--brand-strong);display:flex;gap:6px;align-items:center;margin-bottom:6px}
+
+.mapbox{position:relative;background:var(--map-land);overflow:hidden}
+.mapbox svg.bg{display:block;width:100%;height:100%}
+.pin{position:absolute;width:34px;height:34px;margin:-17px 0 0 -17px;border-radius:50%;border:2.5px solid #fff;display:grid;place-items:center;color:#fff;box-shadow:0 3px 8px rgba(0,0,0,.3);padding:0}
+.pin .ic{width:16px;height:16px}
+.pin.p-eco{background:#2D6A4F}.pin.p-hotel{background:#40916C}.pin.p-umkm{background:#D4A017}.pin.p-village{background:#7A3FD1}.pin.p-guide{background:#B36A00}.pin.p-refill{background:#0EA5E9}.pin.p-rep{background:#B36A00}
+.pin.p-rep.ver{background:#15803D}
+.sheet{position:absolute;left:0;right:0;bottom:0;background:var(--surface);border-radius:28px 28px 0 0;box-shadow:0 -8px 28px rgba(20,36,28,.16);z-index:8;max-height:78%;overflow:auto;padding:6px 16px 18px}
+.grab{width:100%;height:28px;border:0;background:none;display:grid;place-items:center}
+.grab i{width:44px;height:5px;border-radius:9px;background:var(--line)}
+.legend{display:flex;flex-wrap:wrap;gap:10px 14px;font-size:12.5px;color:var(--ink-2)}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend svg{width:34px;height:8px}
+
+.tile{width:100%;aspect-ratio:16/10;border-radius:16px;display:grid;place-items:center;color:#fff;position:relative;overflow:hidden}
+.hscroll{display:flex;gap:12px;overflow-x:auto;margin:0 -16px;padding:2px 16px 12px;scrollbar-width:none}
+.hscroll>*{flex:none}
+.pcard{width:170px;padding:0;overflow:hidden;position:relative;border-radius:24px}
+.pcard .scene{height:104px;position:relative;overflow:hidden}
+.pcard .scene svg{display:block;width:100%;height:100%}
+.pcard .b{padding:10px 12px 12px;display:flex;flex-direction:column;gap:6px}
+.pcard.pk{background:var(--tint-pink)}.pcard.mt{background:var(--tint-mint)}.pcard.lc{background:var(--tint-lilac)}.pcard.or{background:var(--tint-orange)}
+.ribbon{position:absolute;top:10px;left:0;background:#15803D;color:#fff;font:800 10.5px/1 var(--font);padding:5px 10px 5px 8px;border-radius:0 9px 9px 0;letter-spacing:.06em;z-index:2}
+.plus{width:34px;height:34px;border-radius:50%;background:var(--brand);color:#fff;border:0;display:grid;place-items:center;flex:none}
+.stars{display:flex;gap:2px;color:var(--gold)}
+.stars .ic{fill:currentColor}
+.stepper{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0}
+.stepper li{display:flex;gap:12px;position:relative;padding-bottom:14px}
+.stepper li:last-child{padding-bottom:0}
+.stepper li::before{content:"";position:absolute;left:13px;top:28px;bottom:0;width:2px;background:var(--line)}
+.stepper li:last-child::before{display:none}
+.stepper .dot{width:28px;height:28px;border-radius:50%;background:var(--surface-2);color:var(--ink-2);display:grid;place-items:center;flex:none;z-index:1;font-size:12px;font-weight:800}
+.stepper li.done .dot{background:var(--safe);color:#fff}
+.stepper li.now .dot{background:var(--g-brand);color:#fff}
+.pin-dots{display:flex;gap:14px;justify-content:center;margin:14px 0}
+.pin-dots i{width:16px;height:16px;border-radius:50%;border:2px solid var(--ink-2)}
+.pin-dots i.on{background:var(--ink);border-color:var(--ink)}
+.keys{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:300px;margin:0 auto}
+.keys button{height:60px;border-radius:18px;border:1px solid var(--line);background:var(--surface);font:600 24px var(--display)}
+.holdwrap{position:relative;width:200px;height:200px;margin:0 auto}
+.holdwrap svg{position:absolute;inset:0;width:100%;height:100%}
+.hold{position:absolute;inset:16px;border-radius:50%;border:0;background:radial-gradient(circle at 30% 25%,#D4A017,#2D6A4F);color:#fff;font:600 36px/1 var(--display);letter-spacing:.04em;display:grid;place-content:center;gap:4px;text-align:center;touch-action:none;user-select:none;-webkit-user-select:none}
+.hold small{font:700 12.5px var(--font);letter-spacing:0}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.shake{animation:shake .3s}
+.bob{animation:bob 3.2s ease-in-out infinite}
+.an li{opacity:.35;animation:doneStep .4s forwards}
+.an li:nth-child(1){animation-delay:.4s}.an li:nth-child(2){animation-delay:1s}.an li:nth-child(3){animation-delay:1.6s}.an li:nth-child(4){animation-delay:2.2s}.an li:nth-child(5){animation-delay:2.8s}
+@keyframes doneStep{to{opacity:1}}
+.an li .ic{color:var(--brand)}
+.an li{display:flex;gap:10px;align-items:center;font-weight:700}
+.story{position:absolute;inset:0;display:flex;flex-direction:column;padding:12px 20px 20px;color:var(--ink);background:#FFFFFF;overflow:hidden}
+.story .bars{display:flex;gap:5px;position:relative;z-index:2}
+.story .bars i{flex:1;height:4px;border-radius:9px;background:var(--line)}
+.story .bars i.on{background:var(--brand)}
+.story .body{flex:1;display:flex;flex-direction:column;justify-content:center;gap:14px;animation:rise .4s;position:relative;z-index:2}
+.story .big{font:600 68px/1 var(--display)}
+.story .btn.ghost{color:var(--ink);border-color:var(--line);background:var(--surface)}
+.story .btn.primary{background:var(--brand);color:#fff;box-shadow:none}
+.story .stat{display:flex;align-items:baseline;gap:12px;border-bottom:1px solid var(--line);padding:10px 0}
+.story .stat b{font:600 46px/1 var(--display);min-width:88px}
+.story .mascot{position:absolute;right:-24px;bottom:110px;width:170px;height:170px;opacity:.28;z-index:1}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.an li{opacity:1}}
+
+.btn,.chip,.badge,.tab,.eyebrow,.seg button,.sospill,.lbl,.field label,.li b,.h3,.floater,.quick button,.ribbon,.fab,.hold,.index h3,.index .links button{font-family:var(--display)}
+.btn{font-weight:700}
+.meter{width:100%}
+.m-top{display:flex;align-items:baseline;gap:5px}
+.m-n{font:700 58px/1 var(--display);letter-spacing:-.03em}
+.m-of{font:600 15px var(--display);color:var(--ink-2)}
+.m-scale{position:relative;display:flex;gap:3px;height:10px;margin:12px 0 6px}
+.m-seg{border-radius:99px;opacity:.3}
+.m-seg.risk{background:var(--risk)}.m-seg.caution{background:var(--caution)}.m-seg.fair{background:var(--fair)}.m-seg.safe{background:var(--safe)}
+.m-seg.act{opacity:1}
+.m-mark{position:absolute;top:50%;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:#fff;border:3px solid var(--ink);box-shadow:0 1px 4px rgba(20,36,28,.3)}
+.m-lbl{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-2)}
+.meter.sm .m-n{font-size:32px}.meter.sm .m-of{font-size:12px}.meter.sm .m-scale{height:6px;margin:8px 0 4px}.meter.sm .m-mark{width:12px;height:12px;margin:-6px 0 0 -6px;border-width:2.5px}.meter.sm .m-lbl{display:none}
+.meter.on-dark .m-n{color:#fff}.meter.on-dark .m-of,.meter.on-dark .m-lbl{color:rgba(255,255,255,.9)}
+.meter.on-dark .m-seg{background:#fff;opacity:.38}.meter.on-dark .m-seg.act{opacity:1}
+.meter.on-dark .m-mark{background:var(--brand);border-color:#fff}
+.bar{height:8px}
+
+.score-hero{background:linear-gradient(135deg,var(--brand) 0%,var(--brand-strong) 100%);color:#fff;border-radius:24px;padding:22px 18px;position:relative;overflow:hidden}
+.score-hero .score-n{font:700 56px/1 var(--display);letter-spacing:-.02em}
+.challenge{display:flex;gap:12px;align-items:center;padding:12px;border-radius:16px;background:var(--surface-2);border:0;width:100%;text-align:left}
+.challenge.done{background:var(--brand-soft)}
+.challenge .chk{width:32px;height:32px;border-radius:50%;background:var(--surface);display:grid;place-items:center;color:var(--ink-2);flex:none;border:2px solid var(--line)}
+.challenge.done .chk{background:var(--brand);color:#fff;border-color:var(--brand)}
+.points-badge{display:inline-flex;align-items:center;gap:6px;background:var(--gold-soft);color:#8A6A0F;padding:6px 12px;border-radius:999px;font-weight:800;font-size:13px}
+</style>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs id="sym"></defs></svg>
+<button id="idxBtn" type="button">Screen list</button>
+<div class="stage">
+  <aside class="index" id="index" aria-label="Prototype screen list"></aside>
+  <div class="phone" id="phone">
+    <div class="status" aria-hidden="true"><span>9:41</span><i><svg class="ic sm"><use href="#i-wifi"/></svg><span>82%</span></i></div>
+    <div class="view" id="view" tabindex="-1"></div>
+    <nav class="tabbar" id="tabbar" aria-label="Main navigation" hidden></nav>
+    <button class="fab" id="fab" type="button" data-go="report1" aria-label="Report Issue" hidden>ECO</button>
+    <div id="toastHost"></div>
+  </div>
+</div>
+
+<script>
+/* ---------- icons ---------- */
+const ICONS={
+home:'<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+map:'<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>',
+route:'<circle cx="6" cy="19" r="2.5"/><circle cx="18" cy="5" r="2.5"/><path d="M8.5 19H16a3.5 3.5 0 0 0 0-7H8a3.5 3.5 0 0 1 0-7h7.5"/>',
+users:'<path d="M16 20v-1.5a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4V20"/><circle cx="9.5" cy="7.5" r="3.5"/><path d="M21 20v-1.5a4 4 0 0 0-3-3.9M16 4.1a3.5 3.5 0 0 1 0 6.8"/>',
+bag:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 13h18"/>',
+user:'<circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/>',
+shield:'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>',
+shieldc:'<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m8.5 12 2.5 2.5 4.5-5"/>',
+alert:'<path d="M12 3 2 20h20z"/><path d="M12 10v5M12 18v.01"/>',
+octagon:'<path d="M8 2h8l6 6v8l-6 6H8l-6-6V8z"/><path d="M12 8v4M12 16v.01"/>',
+phone:'<path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2"/>',
+pin:'<path d="M12 21s7-6.2 7-11.5a7 7 0 0 0-14 0C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+car:'<path d="M5 16 6.5 10a2 2 0 0 1 2-1.5h7a2 2 0 0 1 2 1.5L19 16"/><rect x="3" y="16" width="18" height="4" rx="1.5"/><path d="M7 20v1M17 20v1"/>',
+bike:'<circle cx="5.5" cy="16.5" r="3"/><circle cx="18.5" cy="16.5" r="3"/><path d="M8.5 16.5h5l3-6h-3M12 6h3l1.5 4.5"/>',
+walk:'<circle cx="13" cy="4.5" r="1.8"/><path d="M9 21l2-6-2-3 1-4 3 2 3 1M11 15l3 2 1 4M9.5 9 7 12"/>',
+bus:'<rect x="4" y="3" width="16" height="15" rx="2"/><path d="M4 11h16M8 18v3M16 18v3"/>',
+star:'<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+check:'<path d="m5 12.5 4.5 4.5L19 7"/>',
+cl:'<path d="m15 6-6 6 6 6"/>',cr:'<path d="m9 6 6 6-6 6"/>',cd:'<path d="m6 9 6 6 6-6"/>',
+plus:'<path d="M12 5v14M5 12h14"/>',
+filter:'<path d="M4 6h16M7 12h10M10 18h4"/>',
+camera:'<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+share:'<circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.6M8.2 13.2l7.6 4.6"/>',
+bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 21h4"/>',
+lock:'<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
+search:'<circle cx="11" cy="11" r="6.5"/><path d="m20 20-4-4"/>',
+heart:'<path d="M12 20s-8-5-8-11a4.5 4.5 0 0 1 8-2.8A4.5 4.5 0 0 1 20 9c0 6-8 11-8 11z"/>',
+msg:'<path d="M4 5h16v11H9l-5 4z"/>',
+send:'<path d="M21 3 3 10.5l7 3 3 7z"/><path d="m10 13.5 4-4"/>',
+x:'<path d="M6 6l12 12M18 6 6 18"/>',
+nav:'<path d="m12 3 7 17-7-4-7 4z"/>',
+cross:'<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/>',
+pill:'<rect x="3" y="8.5" width="18" height="7" rx="3.5" transform="rotate(-35 12 12)"/><path d="m9.5 8.5 6 6"/>',
+spark:'<path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z"/>',
+crown:'<path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/>',
+ticket:'<path d="M4 7h16v3a2 2 0 0 0 0 4v3H4v-3a2 2 0 0 0 0-4z"/><path d="M14 7v10" stroke-dasharray="2 2"/>',
+info:'<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.01"/>',
+eye:'<path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M5 19l1.5-1.5M17.5 6.5 19 5"/>',
+moon:'<path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/>',
+cal:'<rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/>',
+flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+mail:'<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',
+card:'<rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/>',
+qr:'<rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><path d="M14 14h2v2h-2zM18 18h2M18 14v2"/>',
+hist:'<path d="M4 12a8 8 0 1 0 3-6.2M4 4v4h4"/><path d="M12 8v4l3 2"/>',
+wifi:'<path d="M2 9a15 15 0 0 1 20 0M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><path d="M12 19.5v.01"/>',
+compass:'<circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/>',
+leaf:'<path d="M5 19C5 10 10 5 20 4c0 10-5 15-13 15zM5 19l7-7"/>',
+sliders:'<path d="M5 6h14M5 12h14M5 18h14"/><circle cx="9" cy="6" r="2"/><circle cx="15" cy="12" r="2"/><circle cx="8" cy="18" r="2"/>',
+logout:'<path d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9"/>',
+tag:'<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.2"/>',
+bulb:'<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z"/>',
+trend:'<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>',
+recycle:'<path d="M7 19h10l2-4M17 19l-2 3M7 19l-2-3 2-4M3 12l2-4 4-1M15 3l4 1 2 4M9 3 7 6"/>',
+droplet:'<path d="M12 3s6 7 6 12a6 6 0 0 1-12 0c0-5 6-12 6-12z"/>',
+trash:'<path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/>',
+tree:'<path d="M12 3 6 12h4l-3 5h10l-3-5h4zM12 17v4"/>',
+factory:'<path d="M3 21V10l5 3V10l5 3V10l5 3V7h3v14z"/><path d="M7 17h2M13 17h2"/>',
+earth:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2 3 2 15 0 18M12 3c-2 3-2 15 0 18"/>',
+water:'<path d="M12 2v6M12 22v-6M2 12h6M22 12h-6M5 5l4 4M15 15l4 4M5 19l4-4M15 9l4-4"/>',
+footprint:'<path d="M8 4a2 2 0 0 0-2 2v6a3 3 0 0 0 3 3h1a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zM15 12a2 2 0 0 0-2 2v3a3 3 0 0 0 3 3h1a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2z"/>',
+medal:'<circle cx="12" cy="15" r="6"/><path d="m8 9-2-6h12l-2 6"/>'
+};
+document.getElementById('sym').innerHTML=Object.entries(ICONS).map(([k,v])=>`<symbol id="i-${k}" viewBox="0 0 24 24">${v}</symbol>`).join('')
+ +`<symbol id="i-logo" viewBox="0 0 100 100">
+   <circle cx="50" cy="12" r="7.5" fill="none" stroke="#2D6A4F" stroke-width="5"/>
+   <rect x="46.5" y="18" width="7" height="6" fill="#2D6A4F"/>
+   <circle cx="50" cy="52" r="36" fill="#FBF8F1"/>
+   <circle cx="50" cy="52" r="36" fill="none" stroke="#2D6A4F" stroke-width="5"/>
+   <circle cx="50" cy="52" r="30" fill="none" stroke="#2D6A4F" stroke-width="0.8" opacity=".35"/>
+   <path d="M50 26 L53.5 48.5 L50 52 L46.5 48.5 Z" fill="#1B4332"/>
+   <path d="M50 78 L46.5 55.5 L50 52 L53.5 55.5 Z" fill="#40916C"/>
+   <path d="M24 52 L46.5 48.5 L50 52 L46.5 55.5 Z" fill="#2D6A4F"/>
+   <path d="M76 52 L53.5 55.5 L50 52 L53.5 48.5 Z" fill="#2D6A4F"/>
+   <circle cx="50" cy="52" r="4" fill="#FBF8F1" stroke="#1B4332" stroke-width="1.8"/>
+   <path d="M18 48 Q10 68 30 84 Q40 72 32 54 Q26 46 18 48 Z" fill="#40916C"/>
+   <path d="M22 54 Q22 70 30 80" fill="none" stroke="#1B4332" stroke-width="1.4" opacity=".65"/>
+   <path d="M62 82 L72 60 L79 70 L85 62 L90 82 Z" fill="#2D6A4F"/>
+   <path d="M62 82 Q74 78 82 82 Q86 83 90 82" fill="none" stroke="#1B4332" stroke-width="2.2"/>
+ </symbol>`;
+
+/* ---------- helpers ---------- */
+const $=s=>document.querySelector(s);
+const I=(n,c='')=>`<svg class="ic ${c}" aria-hidden="true"><use href="#i-${n}"/></svg>`;
+const rp=n=>'Rp'+n.toLocaleString('en-US');
+const tier=s=>s>=80?{k:'safe',l:'Highly sustainable',i:'leaf'}:s>=65?{k:'fair',l:'Fairly sustainable',i:'shield'}:s>=50?{k:'caution',l:'Needs improvement',i:'alert'}:{k:'risk',l:'Low sustainability',i:'octagon'};
+const tbadge=s=>{const t=tier(s);return `<span class="badge t-${t.k}">${I(t.i,'sm')}${t.l}</span>`};
+const ring=(s,size=140,sw=13,cls='')=>{const r=(size-sw)/2,c=2*Math.PI*r,t=tier(s),m=size/2;
+  return `<div class="ring t-${t.k} ${cls}" style="width:${size}px;height:${size}px" role="img" aria-label="Score ${s} out of 100, ${t.l}"><svg viewBox="0 0 ${size} ${size}" aria-hidden="true"><circle class="ring-bg" cx="${m}" cy="${m}" r="${r}" stroke-width="${sw}"/><circle class="ring-fg" cx="${m}" cy="${m}" r="${r}" stroke-width="${sw}" stroke-dasharray="${(c*s/100).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 ${m} ${m})"/></svg><div class="ring-n"><b>${s}</b><span>/100</span></div></div>`};
+const meter=(s,o={})=>{const has=s!=null,t=has?tier(s):null,segs=[[0,50,'risk'],[50,65,'caution'],[65,80,'fair'],[80,100,'safe']];
+  return `<div class="meter ${o.dark?'on-dark':''} ${o.sm?'sm':''}" role="img" aria-label="${has?`Score ${s} out of 100, ${t.l}`:'Score not available'}"><div class="m-top"><b class="m-n num">${has?s:'--'}</b><span class="m-of">/100</span></div><div class="m-scale" aria-hidden="true">${segs.map(g=>`<i class="m-seg ${g[2]} ${has&&t.k===g[2]?'act':''}" style="flex:${g[1]-g[0]}"></i>`).join('')}${has?`<span class="m-mark" style="left:${s}%"></span>`:''}</div><div class="m-lbl" aria-hidden="true"><span>0</span><span>100</span></div></div>`};
+const vbadge=v=>v==='ver'?`<span class="badge t-safe">${I('shieldc','sm')}Verified</span>`:v==='old'?`<span class="badge t-mute">${I('clock','sm')}Outdated</span>`:`<span class="badge t-fair">${I('info','sm')}Unverified</span>`;
+const reportPill=`<button class="sospill" type="button" data-go="report1" aria-label="Report an issue">${I('flag','sm')}Report</button>`;
+const hdr=(t,o={})=>`<header class="hdr ${o.left?'left':''}">${o.back===false?'<span class="hdr-sp"></span>':`<button class="ibtn" type="button" data-back aria-label="Back">${I('cl','lg')}</button>`}<h1>${t}</h1>${o.right!==undefined?o.right:reportPill}</header>`;
+const btn=(label,go,v='primary',ic='',extra='')=>`<button class="btn ${v}" type="button" ${go?`data-go="${go}"`:''} ${extra}>${ic?I(ic):''}${label}</button>`;
+const chips=(arr,mode='one',sel=[0])=>`<div class="chips" data-group="${mode}">${arr.map((a,i)=>`<button class="chip" type="button" data-pick aria-pressed="${sel.includes(i)}">${a}</button>`).join('')}</div>`;
+const field=(id,label,o={})=>`<div class="field"><label for="${id}">${label}</label>${o.ic?`<div class="with-ic">${I(o.ic)}<input id="${id}" type="${o.type||'text'}" value="${o.v||''}" placeholder="${o.ph||''}" ${o.ac?`autocomplete="${o.ac}"`:''}></div>`:`<input id="${id}" type="${o.type||'text'}" value="${o.v||''}" placeholder="${o.ph||''}" ${o.ac?`autocomplete="${o.ac}"`:''}>`}${o.hint?`<span class="hint">${o.hint}</span>`:''}</div>`;
+const toggle=(id,on,label)=>`<button class="toggle" id="${id}" type="button" role="switch" aria-checked="${on}" aria-label="${label}" data-toggle></button>`;
+const prog=(n,t=3)=>`<div class="progress" role="img" aria-label="Step ${n} of ${t}">${Array.from({length:t},(_,i)=>`<i class="${i<n?'on':''}"></i>`).join('')}</div>`;
+const stars=n=>`<span class="stars" role="img" aria-label="${n} out of 5 stars">${Array.from({length:5},(_,i)=>I('star','sm')).join('')}</span>`;
+const li=(ic,t,sub,go,right='')=>`<button class="li" type="button" ${go?`data-go="${go}"`:''}><span class="ico">${I(ic)}</span><span class="grow"><b>${t}</b>${sub?`<br><span class="muted small">${sub}</span>`:''}</span>${right||I('cr','sm')}</button>`;
+const tileGrad=(a,b,ic)=>`<div class="tile" style="background:linear-gradient(135deg,${a},${b})">${I(ic,'xl')}</div>`;
+const logo=(s=64)=>`<svg class="mascot" width="${s}" height="${s}" viewBox="0 0 100 100" aria-hidden="true"><use href="#i-logo"/></svg>`;
+
+/* ---------- data ---------- */
+const NIGHT={'19:30':84,'20:00':78,'21:00':68,'22:00':58};
+const ADVICE={
+ '19:30':'Great choice! Returning before 19:30 lets you enjoy the day and use shared transport with other travelers.',
+ '20:00':'Still a good plan. After 20:00, shared shuttles stop running, so you would need a private ride back.',
+ '21:00':'The return trip will rely on private transport. Consider carpooling with other travelers or booking a verified guide with a vehicle.',
+ '22:00':'Your trip has a solid sustainability profile during the day. However, returning late relies on private transport and increases energy use per person. Consider leaving earlier or joining a shared return.'};
+const factors=()=>[['Environmental impact',82],['Local economic impact',91],['Community benefit',88],['Sustainable transport',NIGHT[st.ret]],['Sustainable accommodation',84],['Activity sustainability',90]];
+const overall=()=>Math.round(factors().reduce((a,f)=>a+f[1],0)/6);
+const GUIDES=[
+ {id:'g1',n:'Ratri Wulandari',i:'RW',a:'',m:94,r:4.9,rv:128,tag:'Culture + slow travel',svc:['City tour','Culture','Airport'],lang:'Indonesian, English',p:250000,bio:'A Kotagede local guide and certified Green Tourism Ambassador. Leads heritage walks that support silver-craft families and local warungs.'},
+ {id:'g2',n:'Dinda Aprilia',i:'DA',a:'a2',m:87,r:4.8,rv:96,tag:'Food + walking tour',svc:['City tour','Food'],lang:'Indonesian, English, Chinese',p:200000,bio:'Takes travelers to women-run food stalls along busy, well-lit routes. Brings a reusable cutlery kit for every guest.'},
+ {id:'g3',n:'Sekar Pramesti',i:'SP',a:'a3',m:81,r:4.7,rv:64,tag:'Nature, hiking, low-impact travel',svc:['Hiking','Nature','Village stay'],lang:'Indonesian, English',p:350000,bio:'Accompanies low-impact hikes and community-homestay visits. Certified in first aid and Leave-No-Trace practices.'}];
+const POSTS=[
+ {id:'p1',a:'MK',ac:'a2',n:'Mei K.',c:'Waste alert',ct:'warn',t:'20 hours ago',v:'ver',loc:'Near Alun-Alun Kidul',txt:'Overflowing trash bins after the night market. Bring a small bag for your own waste and use the refill station at the corner cafe.',h:23,cm:6},
+ {id:'p2',a:'AL',ac:'',n:'Anna L.',c:'Tips',ct:'tip',t:'2 days ago',v:'unv',loc:'Prambanan',txt:'Arrive at 06:30 when the gates open. Quiet, cool, and the shuttle is empty. Bring a refillable bottle — there is a water station at the entrance.',h:41,cm:9},
+ {id:'p3',a:'YS',ac:'a3',n:'Yuki S.',c:'Recommendation',ct:'rec',t:'4 days ago',v:'ver',loc:'Kotagede',txt:'A small cafe near the silver market, run by a women cooperative. Zero-waste kitchen, refill station, and they pay fair wages.',h:58,cm:12},
+ {id:'p4',a:'DR',ac:'a4',n:'Dewi R.',c:'Transport',ct:'trans',t:'6 days ago',v:'ver',loc:'Tugu Station',txt:'Trans Jogja line 1A to YIA airport is affordable and low-emission. Pick a front seat and bring your own water bottle.',h:34,cm:4},
+ {id:'p5',a:'JT',ac:'a2',n:'Jo T.',c:'Waste alert',ct:'warn',t:'3 weeks ago',v:'old',loc:'Parangtritis Road km 8',txt:'Plastic waste piling up near the roadside stalls. Not sure if it has been cleaned up. Report if you pass by.',h:12,cm:2}];
+const REPORTS=[
+ {id:'r1',x:38,y:34,v:'ver',c:'Waste',t:'Overflowing bins at night market',ago:'20 hours ago'},
+ {id:'r2',x:66,y:58,v:'unv',c:'Water',t:'Grey water near the riverbank',ago:'3 hours ago'},
+ {id:'r3',x:24,y:64,v:'old',c:'Damage',t:'Broken boardwalk (unchecked)',ago:'3 weeks ago'}];
+const BUDDIES=[
+ {n:'Hana',i:'H',a:'a2',tag:'Calm Explorer',to:'Borobudur',d:'28 Sep',from:'Japan'},
+ {n:'Sofia',i:'S',a:'a3',tag:'Culture Seeker',to:'Kotagede',d:'27 Sep',from:'Spain'},
+ {n:'Lin',i:'L',a:'',tag:'Trail Hopper',to:'Kaliurang',d:'29 Sep',from:'Taiwan'}];
+const CHALLENGES=[
+ {t:'Bring your own bottle',p:20,done:true},
+ {t:'Walk instead of a short ride',p:15,done:true},
+ {t:'Avoid single-use plastic',p:25,done:false},
+ {t:'Eat at a local business',p:10,done:false},
+ {t:'Visit a community-based destination',p:30,done:false},
+ {t:'Join a clean-up activity',p:40,done:false}];
+const REPORT_CATS=[
+ {id:'waste',l:'Waste / litter',i:'trash'},
+ {id:'water',l:'Water pollution',i:'droplet'},
+ {id:'damage',l:'Damage / facility',i:'factory'},
+ {id:'deforest',l:'Deforestation',i:'tree'},
+ {id:'wildlife',l:'Wildlife issue',i:'earth'},
+ {id:'other',l:'Other',i:'flag'}];
+
+/* ---------- state ---------- */
+const st={cur:'splash',hist:[],theme:null,ret:'22:00',layers:new Set(['eco','umkm','rep']),sheet:false,tripTab:'Active',cat:'All',authTab:'Log in',view:'Bars',esc:0,pin:'',guide:'g1',svc:0,pay:0,post:'p1',story:0,timers:[],reportCat:'waste',points:1250,challenges:CHALLENGES.map(c=>({...c}))};
+const clearT=()=>{st.timers.forEach(t=>{clearTimeout(t);clearInterval(t)});st.timers=[]};
+
+const scene=k=>{
+ const P={kraton:['#D8F3DC','#95D5B2','#FFE7A0','#1B4332','#2D6A4F'],tamansari:['#B8F0D6','#5CCB9F','#FFF3B8','#0B6B49','#2BA278'],kotagede:['#DCC8FF','#A67FF0','#FFE8B0','#4B2A99','#7E56D8'],pantai:['#FFD9A8','#FF9E7A','#FFF1B0','#0B5FA5','#2E95D8']}[k];
+ const body={
+  kraton:`<polygon points="35,58 85,34 135,58" fill="${P[3]}"/><rect x="42" y="58" width="86" height="6" fill="${P[3]}"/><g fill="${P[3]}"><rect x="48" y="64" width="6" height="30"/><rect x="72" y="64" width="6" height="30"/><rect x="92" y="64" width="6" height="30"/><rect x="116" y="64" width="6" height="30"/></g><polygon points="60,64 85,48 110,64" fill="${P[4]}"/>`,
+  tamansari:`<rect x="20" y="56" width="130" height="40" fill="${P[3]}"/><g fill="${P[2]}"><path d="M34 96V76a12 12 0 0 1 24 0v20z"/><path d="M73 96V76a12 12 0 0 1 24 0v20z"/><path d="M112 96V76a12 12 0 0 1 24 0v20z"/></g><rect x="14" y="52" width="142" height="6" fill="${P[4]}"/>`,
+  kotagede:`<rect x="40" y="66" width="90" height="30" fill="${P[3]}"/><polygon points="30,66 85,36 140,66" fill="${P[4]}"/><polygon points="52,66 85,48 118,66" fill="${P[3]}"/><rect x="76" y="76" width="18" height="20" fill="${P[2]}"/>`,
+  pantai:`<path d="M0 80q20-8 40 0t40 0t40 0t50 0v24H0z" fill="${P[4]}"/><path d="M120 94q4-30-8-44" stroke="#5B3A29" stroke-width="4" fill="none"/><g fill="#12966A"><path d="M112 50q-18-4-26 8q14-8 26-8z"/><path d="M112 50q18-6 28 6q-16-8-28-6z"/><path d="M112 50q-6-16-22-16q14 4 22 16z"/><path d="M112 50q8-16 24-14q-16 2-24 14z"/></g>`}[k];
+ const id='sg'+k;
+ const ground=k==='pantai'?'':`<rect y="94" width="170" height="10" fill="${P[3]}"/>`;
+ return `<svg viewBox="0 0 170 104" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><defs><linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${P[0]}"/><stop offset="1" stop-color="${P[1]}"/></linearGradient></defs><rect width="170" height="104" fill="url(#${id})"/><circle cx="132" cy="28" r="14" fill="${P[2]}"/>${k==='pantai'?'':`<path d="M0 84q40-16 85-4t85-8v32H0z" fill="${P[4]}" opacity=".55"/>`}${body}${ground}</svg>`};
+const blobs=`<span class="blob" style="width:236px;height:236px;left:50%;top:50%;margin:-118px 0 0 -118px;background:var(--brand-soft)"></span><span class="blob" style="width:20px;height:20px;left:52px;top:56px;background:#95D5B2"></span><span class="blob" style="width:12px;height:12px;right:58px;top:72px;background:var(--brand)"></span><span class="blob" style="width:28px;height:28px;right:40px;bottom:30px;background:#B7E4C7"></span>`;
+const maskot=(w)=>`<svg class="mascot bob" width="${w}" height="${w}" viewBox="0 0 100 100" aria-hidden="true"><use href="#i-logo"/></svg>`;
+const chipF=(t,ic,p)=>`<span class="floater" style="${p}">${I(ic,'sm')}${t}</span>`;
+const sqF=(ic,g,p)=>`<span class="floater sq ${g}" style="${p}">${I(ic,'lg')}</span>`;
+const FL={
+ 1:chipF('Is it sustainable?','leaf','left:12px;top:30px')+chipF('Low impact route','walk','right:14px;top:150px')+sqF('recycle','g-pink','left:32px;bottom:30px'),
+ 2:chipF('82 · Sustainable','shieldc','left:12px;top:26px')+chipF('+120 points','medal','right:14px;top:150px')+sqF('tree','g-pink','right:30px;top:28px'),
+ 3:chipF('Local guide joined','check','left:12px;top:30px')+chipF('Impact tracked','trend','right:12px;top:150px')+sqF('earth','g-pink','left:30px;bottom:30px')};
+
+/* ---------- screens ---------- */
+const S={};
+const def=(id,flow,name,o)=>S[id]=Object.assign({id,flow,name},o);
+
+/* A. onboarding & auth */
+def('splash','A','Splash',{html:()=>`<div class="pad stack lg" style="min-height:100%;text-align:center;align-items:center">
+  <b style="font:600 26px var(--display);color:var(--brand);margin-top:6px">Lestari</b>
+  <div class="stagebox" style="height:300px;width:calc(100% + 32px);margin:0 -16px">${blobs}${maskot(230)}</div>
+  <div class="stack sm"><h1 style="font:600 40px/1.05 var(--display);color:var(--brand);text-wrap:balance">Explore and Preserve</h1><p class="muted">AI-powered sustainable travel intelligence.</p></div>
+  <div style="width:100%;margin-top:auto" class="stack">${btn('Get started '+I('cr'),'onb1')}${btn('I already have an account','auth','link')}</div></div>`});
+const onb=(n,t,d)=>()=>`<div class="pad stack lg" style="min-height:100%">
+  <div class="row between" style="padding-top:6px"><span class="eyebrow">${n} of 3</span><button class="btn link" type="button" data-go="auth">Skip</button></div>
+  <div class="stagebox" style="height:250px;width:calc(100% + 32px);margin:0 -16px">${blobs}${maskot(168)}${FL[n]}</div>
+  <div class="stack"><h1 class="h1" style="font-size:22px">${t}</h1><p class="muted" style="font-size:13.5px">${d}</p></div>
+  <div class="row" style="justify-content:center;gap:8px" role="img" aria-label="Slide ${n} of 3">${[1,2,3].map(i=>`<i style="width:${i===n?28:9}px;height:9px;border-radius:9px;background:${i===n?'var(--brand)':'var(--line)'}"></i>`).join('')}</div>
+  <div style="margin-top:auto">${btn(n===3?'Create account':'Next '+I('cr'),n===3?'auth':'onb'+(n+1))}</div></div>`;
+def('onb1','A','Onboarding 1',{html:onb(1,'Travel well, leave a lighter footprint','You already care about the planet. What is hard: knowing which choices actually help — right now, on this trip.')});
+def('onb2','A','Onboarding 2',{html:onb(2,'Your personal sustainability score','Lestari turns environmental, local economic, community, and transport data into one easy number you can act on.')});
+def('onb3','A','Onboarding 3',{html:onb(3,'Turn awareness into action','Green challenges, Lestari Points, and verified local businesses make responsible travel the easy choice.')});
+def('auth','A','Login / Register',{html:()=>`<div class="pad stack lg" style="padding-top:16px">
+  <div class="row" style="gap:8px">${logo(44)}<b style="font:600 26px var(--display);color:var(--brand)">Lestari</b></div>
+  <div class="stack sm"><h1 class="h1">${st.authTab==='Log in'?'Welcome back':'Create your account'}</h1><p class="muted">${st.authTab==='Log in'?'Log in to see your trips and impact.':'Takes less than two minutes.'}</p></div>
+  <div class="seg" role="group" aria-label="Log in or sign up">${['Log in','Sign up'].map(t=>`<button type="button" data-act="authtab" data-v="${t}" aria-pressed="${st.authTab===t}">${t}</button>`).join('')}</div>
+  <div class="stack">${field('em','Email',{ic:'mail',type:'email',v:'nadia@example.com',ac:'email'})}
+  <div class="field"><label for="pw">Password</label><div class="with-ic">${I('lock')}<input id="pw" type="password" value="rahasia123" autocomplete="current-password"></div><button class="btn link" type="button" data-act="showpw" style="align-self:flex-start;min-height:36px;padding:0">Show password</button></div></div>
+  ${btn(st.authTab==='Log in'?'Log in':'Sign up','pf')}
+  <div class="row" style="gap:12px"><hr style="flex:1;border:0;border-top:1px solid var(--line)"><span class="muted small">or</span><hr style="flex:1;border:0;border-top:1px solid var(--line)"></div>
+  ${btn('Continue with Google','pf','ghost','globe')}
+  <p class="muted xs" style="text-align:center">By continuing, you agree to Lestari's Terms and Privacy Policy.</p></div>`});
+def('pf','A','Preferences',{html:()=>`${hdr('Quick profile',{right:'<span class="hdr-sp"></span>'})}${prog(1)}<div class="pad stack lg">
+  <p class="muted">This helps the AI tailor your sustainability score and recommendations.</p>
+  ${field('nm','Nickname',{v:'Nadia'})}
+  <div class="row" style="align-items:flex-start">${`<div class="grow">${field('ag','Age',{type:'number',v:'26'})}</div>`}<div class="grow"><div class="field"><label for="nat">Nationality</label><select id="nat"><option>Indonesia</option><option>Japan</option><option>Australia</option><option>Netherlands</option><option>Other</option></select></div></div></div>
+  <div class="field"><span class="lbl">Language</span>${chips(['Indonesian','English','Chinese','Korean'],'many',[0,1])}</div>
+  <div class="field"><span class="lbl">Traveler type</span>${chips(['Backpacker','Culture & history','Nature & hiking','Food','Work while traveling'],'one',[1])}</div>
+  <div class="field"><span class="lbl">Sustainability preferences</span>${chips(['Avoid single-use plastic','Prefer local businesses','Choose low-emission transport','Support community tourism'],'many',[0,1,2,3])}</div>
+  ${btn('Continue','perm')}</div>`});
+def('perm','A','Location & notifications',{html:()=>`${hdr('App permissions',{right:'<span class="hdr-sp"></span>'})}${prog(2)}<div class="pad stack lg">
+  <p class="muted">Two permissions power your sustainable travel experience.</p>
+  <div class="card stack"><div class="row"><span class="ico" style="width:44px;height:44px;background:var(--brand-soft);color:var(--brand-strong)">${I('pin')}</span><div class="grow"><b>Location</b><p class="muted small">For nearby sustainable spots, the map, and impact tracking.</p></div></div>
+    <div class="field"><span class="lbl">Choose access</span>${chips(['Always (recommended)','While using the app'],'one',[0])}<span class="hint">"Always" is needed so trip tracking keeps working when the screen is off.</span></div></div>
+  <div class="card"><div class="row"><span class="ico" style="width:44px;height:44px;background:var(--brand-soft);color:var(--brand-strong)">${I('bell')}</span><div class="grow"><b>Notifications</b><p class="muted small">Check-in reminders, green challenges, and local impact alerts.</p></div>${toggle('nt',true,'Notifications')}</div></div>
+  ${btn('Allow and start','home')}${btn('Not now','home','link')}</div>`});
+
+/* B. home */
+def('home','B','Home',{nav:true,tab:'home',html:()=>`<div class="pad stack lg">
+  <div class="row between" style="padding-top:4px"><div><h1 class="h1" style="font-size:28px">Hi, Nadia</h1><p class="muted small">Ready to travel lighter today?</p></div>
+    <div class="row" style="gap:2px"><button class="ibtn solid" type="button" data-act="toast" data-v="2 new impact alerts (example)" aria-label="Notifications">${I('bell')}</button><button class="ibtn solid" type="button" data-go="profile" aria-label="Profile">${I('user')}</button></div></div>
+  <section class="hero stack" aria-label="Nearby sustainability score" style="margin-top:34px"><svg class="mascot" width="118" height="118" viewBox="0 0 100 100" aria-hidden="true" style="position:absolute;right:-2px;top:-46px"><use href="#i-logo"/></svg>
+    <span class="eyebrow">${I('pin','sm')} Malioboro area</span>
+    <div class="stack sm" style="margin-top:6px">${meter(78,{dark:1})}<div class="stack sm" style="margin-top:4px"><b style="font:700 18px var(--display)">Fairly sustainable</b><span class="small" style="opacity:.96">Walkable, many local businesses, moderate waste pressure.</span></div></div>
+    <button class="btn link" type="button" data-go="map" style="justify-content:flex-start;padding:0;min-height:36px">View on map ${I('cr','sm')}</button></section>
+  <nav class="quick" aria-label="Quick actions">${[['leaf','Plan','g-pink','plan1'],['medal','Score','g-pink','score'],['map','Lestari Map','g-pink','map'],['msg','Community','g-pink','community'],['flag','Report','g-pink','report1']].map(q=>`<button type="button" data-go="${q[3]}"><span class="tile-ic ${q[2]}">${I(q[0],'lg')}</span>${q[1]}</button>`).join('')}</nav>
+  <section class="banner" aria-label="Next trip"><div style="width:56%" class="stack sm"><span class="eyebrow">Next trip</span><h2 class="h2">Yogyakarta → Gunungkidul</h2><span class="small muted">Tomorrow, 26 Sep · 17:00–22:00 · Motorbike</span><div>${tbadge(74)}</div>${btn('Open trip','td','dark','','style="width:auto;align-self:flex-start;min-height:42px;margin-top:4px"')}</div><div class="art">${scene('pantai')}</div></section>
+  <section class="stack" aria-label="Impact alerts"><div class="row between"><h2 class="h2">Impact alerts near you</h2></div>
+    ${[['caution','trash','Overflowing bins after night market','Alun-Alun Kidul · 20 hours ago','ver'],['fair','droplet','Grey water near the riverbank','Code River · 3 hours ago','unv']].map(a=>`<button type="button" class="card row t-${a[0]}" data-go="rd" style="text-align:left;gap:12px"><span class="badge" style="height:38px;width:38px;justify-content:center;padding:0;border-radius:14px">${I(a[1])}</span><span class="grow"><b class="small">${a[2]}</b><br><span class="muted xs">${a[3]}</span></span>${vbadge(a[4])}</button>`).join('')}</section>
+  <section class="stack" aria-label="Recommendations"><div class="row between"><h2 class="h2">Sustainable & worth a visit</h2><button class="btn link" type="button" data-go="map">See all</button></div>
+    <div class="hscroll">${[['Kraton Yogyakarta',88,'kraton','pk','Community-managed heritage','ECO PICK'],['Taman Sari',84,'tamansari','mt','Local guides + refill station','SAFE'],['Kotagede',81,'kotagede','lc','Women-run silver co-op','HIDDEN GEM']].map(p=>`<div class="card pcard ${p[3]}"><span class="ribbon">${p[5]}</span><button type="button" class="scene" data-go="map" aria-label="${p[0]} on the map" style="border:0;padding:0;display:block;width:100%">${scene(p[2])}</button><div class="b"><b class="small">${p[0]}</b><span class="muted xs">${p[4]}</span><div class="row between">${tbadge(p[1])}<button class="plus" type="button" data-act="toast" data-v="${p[0]} added to your destinations" aria-label="Add ${p[0]} to your destinations">${I('plus')}</button></div></div></div>`).join('')}</div></section></div>`});
+
+/* C. plan */
+def('plan1','C','Plan 1 · Origin & destination',{nav:true,tab:'plan',fab:true,html:()=>`${hdr('Plan a trip',{right:'<span class="hdr-sp"></span>',back:false})}${prog(1)}<div class="pad stack lg">
+  <div class="stack sm"><h1 class="h1">Where are you going?</h1><p class="muted">Step 1 of 3 · Origin and destination</p></div>
+  ${field('or','From',{ic:'pin',v:'My location · Malioboro'})}${field('ds','To',{ic:'nav',v:'Gunungkidul'})}
+  <div class="field"><span class="lbl">Popular destinations</span>${chips(['Gunungkidul','Prambanan','Parangtritis','Kaliurang','YIA Airport'],'one',[0])}</div>
+  ${btn('Continue','plan2')}</div>`});
+def('plan2','C','Plan 2 · Time',{html:()=>`${hdr('Plan a trip')}${prog(2)}<div class="pad stack lg">
+  <div class="stack sm"><h1 class="h1">When are you leaving?</h1><p class="muted">Step 2 of 3 · Date and time</p></div>
+  ${field('dt','Date',{type:'date',v:'2026-09-26'})}
+  <div class="row" style="align-items:flex-start"><div class="grow">${field('t1','Departure time',{type:'time',v:'17:00'})}</div><div class="grow">${field('t2','Return time',{type:'time',v:'22:00'})}</div></div>
+  <div class="note eco">${I('leaf')}<span>Return time matters. Later returns often mean private transport — which lowers your sustainability score.</span></div>
+  ${btn('Continue','plan3')}</div>`});
+def('plan3','C','Plan 3 · Detail',{html:()=>`${hdr('Plan a trip')}${prog(3)}<div class="pad stack lg">
+  <div class="stack sm"><h1 class="h1">How are you getting there?</h1><p class="muted">Step 3 of 3 · Transport and activities</p></div>
+  <div class="field"><span class="lbl">Mode of transport</span>${chips([`${I('bike','sm')}Motorbike`,`${I('car','sm')}Car / taxi`,`${I('bus','sm')}Public transport`,`${I('walk','sm')}Walking`],'one',[0])}</div>
+  <div class="field"><span class="lbl">Activities</span>${chips(['Beach','Food','Culture','Hiking','Shopping'],'many',[0,1])}</div>
+  <div class="field"><span class="lbl">Who is joining</span><div class="seg" data-group="one">${['Solo','Two of us','Group'].map((t,i)=>`<button type="button" data-pick aria-pressed="${i===0}">${t}</button>`).join('')}</div></div>
+  ${btn('Analyze with AI','an','primary','spark')}</div>`});
+def('an','C','Analyzing',{html:()=>`<div class="pad stack lg" style="min-height:100%;justify-content:center;text-align:center;align-items:center">
+  <div class="bob">${logo(132)}</div><h1 class="h1">AI is analyzing</h1><p class="muted">Combining destination data, community reports, and sustainable business databases.</p>
+  <ul class="an stepper" style="align-self:stretch;gap:12px;text-align:left;margin-top:10px;list-style:none;padding:0">${['Environmental impact data','Local economic contribution','Community benefit signals','Transport emission factors','Activity sustainability checks'].map(t=>`<li>${I('check')}${t}</li>`).join('')}</ul>
+  ${btn('Skip animation','result','link')}</div>`,after(){st.timers.push(setTimeout(()=>{if(st.cur==='an')go('result',{replace:true})},3600))}});
+def('result','C','Analysis results',{html:()=>{const o=overall(),F=factors();
+  const cx=110,cy=112,R=78,ax=['Environment','Local economy','Community','Transport','Stay','Activities'];
+  const pt=(i,v)=>{const a=-Math.PI/2+i*Math.PI/3;return [cx+R*v/100*Math.cos(a),cy+R*v/100*Math.sin(a)]};
+  const radar=`<svg viewBox="0 0 220 224" style="width:100%;max-width:300px;margin:0 auto;display:block" role="img" aria-label="Radar: ${F.map((f,i)=>ax[i]+' '+f[1]).join(', ')}">${[.25,.5,.75,1].map(k=>`<polygon points="${ax.map((_,i)=>pt(i,k*100).join(',')).join(' ')}" fill="none" stroke="var(--line)"/>`).join('')}${ax.map((_,i)=>`<line x1="${cx}" y1="${cy}" x2="${pt(i,100)[0]}" y2="${pt(i,100)[1]}" stroke="var(--line)"/>`).join('')}<polygon points="${F.map((f,i)=>pt(i,f[1]).join(',')).join(' ')}" fill="var(--brand)" fill-opacity=".22" stroke="var(--brand)" stroke-width="2.5"/>${F.map((f,i)=>{const p=pt(i,f[1]);return `<circle cx="${p[0]}" cy="${p[1]}" r="4" fill="var(--brand)"/>`}).join('')}${ax.map((a,i)=>{const p=pt(i,122);return `<text x="${p[0]}" y="${p[1]+4}" text-anchor="middle" font-size="10.5" font-weight="700" fill="var(--ink)" font-family="Figtree">${a} ${F[i][1]}</text>`}).join('')}</svg>`;
+  const bars=`<div class="stack">${F.map(f=>{const tt=tier(f[1]);return `<div class="frow t-${tt.k}"><span class="nm">${f[0]}</span><span class="val num" style="color:var(--t)">${f[1]} · ${tt.l}</span><div class="bar" role="img" aria-label="${f[0]} ${f[1]} out of 100"><i style="width:${f[1]}%"></i></div></div>`}).join('')}</div>`;
+  const tips=[['leaf','Choosing the local walking route and community-based experiences reduces transport impact while supporting local businesses.'],['tree','Your chosen accommodation is verified sustainable — this alone lifts your score by ~6 points.'],['medal','Return before 19:30 unlocks the shared shuttle: +26 points on sustainable transport.']];
+  return `${hdr('Trip analysis')}<div class="pad stack lg">
+  <div class="hero stack" style="margin-top:36px"><svg class="mascot" width="118" height="118" viewBox="0 0 100 100" aria-hidden="true" style="position:absolute;right:-2px;top:-46px"><use href="#i-logo"/></svg><span class="eyebrow" style="max-width:62%;line-height:1.35">Yogyakarta → Gunungkidul · 26 Sep · Motorbike · Solo</span><div style="margin-top:4px">${meter(o,{dark:1})}</div><div>${tbadge(o)}</div><p class="small" style="opacity:.96">Estimate based on sustainable tourism data and community reports. Not a guarantee — a support for your decision.</p></div>
+  <section class="stack"><div class="row between"><h2 class="h2">6-factor breakdown</h2></div><div class="seg" role="group" aria-label="Chart view">${['Bars','Radar'].map(v=>`<button type="button" data-act="view" data-v="${v}" aria-pressed="${st.view===v}">${v}</button>`).join('')}</div>${st.view==='Bars'?bars:radar}</section>
+  <section class="stack"><h2 class="h2">Try another return time</h2><div class="chips" role="group" aria-label="Return time">${Object.keys(NIGHT).map(k=>`<button class="chip" type="button" data-act="ret" data-v="${k}" aria-pressed="${st.ret===k}">${I('clock','sm')}${k}</button>`).join('')}</div><p class="muted small">Sustainable transport score for returning at ${st.ret}: <b class="num">${NIGHT[st.ret]}</b></p></section>
+  <section class="stack"><h2 class="h2">How to improve your score</h2>${tips.map(w=>`<div class="note eco">${I(w[0])}<span>${w[1]}</span></div>`).join('')}</section>
+  <section class="qbox" aria-label="AI recommendation"><div class="eyebrow">${I('spark','sm')}AI recommendation</div>${ADVICE[st.ret]}</section>
+  <button type="button" class="card row" data-go="rp" style="text-align:left"><span class="ico" style="width:44px;height:44px">${I('route')}</span><span class="grow"><b>View route by impact</b><br><span class="muted small">3 segments · 1 high-emission stretch</span></span>${I('cr','sm')}</button></div>
+  <div class="sticky-cta">${btn('Start monitoring','tl','primary','shieldc')}<div class="row">${btn('Save trip','trips','ghost','','style="min-height:46px"')}${btn('Book a guide','guides','ghost','users','style="min-height:46px"')}</div></div>`}});
+def('rp','C','Route preview',{html:()=>{const seg=(d,c,dash)=>`<path d="${d}" stroke="${c}" stroke-width="7" fill="none" stroke-linecap="round" ${dash?`stroke-dasharray="${dash}"`:''}/>`;
+  return `${hdr('Route by impact')}<div class="pad stack lg"><div class="mapbox" style="height:280px;border-radius:18px"><svg class="bg" viewBox="0 0 360 280" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Route map from the city center to Gunungkidul with three impact segments"><rect width="360" height="280" fill="var(--map-land)"/><path d="M0 240q80-30 150-10t210-40v90H0z" fill="var(--map-water)"/><path d="M40 60q40-20 80 0t60-6" stroke="var(--map-road)" stroke-width="8" fill="none"/>
+  ${seg('M40 70Q90 90 130 110','var(--safe)')}${seg('M130 110Q190 130 230 150','var(--fair)','14 9')}${seg('M230 150Q280 170 320 200','var(--caution)','2 10')}
+  <circle cx="40" cy="70" r="9" fill="var(--brand)" stroke="#fff" stroke-width="3"/><circle cx="320" cy="200" r="9" fill="var(--ink)" stroke="#fff" stroke-width="3"/></svg></div>
+  <div class="legend" aria-label="Legend">${[['var(--safe)','','Low impact'],['var(--fair)','14 9','Moderate'],['var(--caution)','2 10','High impact']].map(l=>`<span><svg viewBox="0 0 34 8"><path d="M2 4h30" stroke="${l[0]}" stroke-width="6" stroke-linecap="round" ${l[1]?`stroke-dasharray="${l[1]}"`:''}/></svg>${l[2]}</span>`).join('')}</div>
+  <div class="card list">${[['Malioboro → Piyungan','17:00–17:40',84,'Walking + shared shuttle'],['Piyungan → Wonosari','17:40–18:30',72,'Solo motorbike, moderate emissions'],['Wonosari → Beach','18:30–19:20',54,'Private ride after dark, higher per-person emissions']].map(s=>`<div class="li"><span class="grow"><b class="small">${s[0]}</b><br><span class="muted xs">${s[1]} · ${s[3]}</span></span>${tbadge(s[2])}</div>`).join('')}</div>
+  ${btn('Back to results','result','ghost')}</div>`}});
+
+/* D. map */
+def('map','D','Lestari Map',{nav:true,tab:'map',html:()=>{
+  const L=[['eco','Eco spots','leaf'],['hotel','Green stays','bed'],['umkm','Local UMKM','bag'],['village','Villages','home'],['guide','Green guides','users'],['refill','Refill','droplet'],['rep','Reports','flag']];
+  const pins={eco:[[30,26],[60,44],[74,70]],hotel:[[46,56],[20,44]],umkm:[[36,48],[62,30]],village:[[52,22],[28,72]],guide:[[44,36],[68,52]],refill:[[50,38],[34,58]]};
+  const ic={eco:'leaf',hotel:'bed',umkm:'bag',village:'home',guide:'users',refill:'droplet'};
+  const L2=[['eco','Eco spots','leaf'],['hotel','Green stays','home'],['umkm','UMKM','bag'],['village','Villages','compass'],['guide','Guides','users'],['refill','Refill','droplet'],['rep','Reports','flag']];
+  return `<div style="height:100%;position:relative;display:flex;flex-direction:column">
+  <div style="padding:6px 12px 8px;background:var(--bg);z-index:9" class="stack sm"><div class="row"><button class="ibtn" type="button" data-back aria-label="Back">${I('cl','lg')}</button><div class="field grow"><div class="with-ic">${I('search')}<input id="ms" type="search" placeholder="Search area or place" aria-label="Search area"></div></div></div>
+  <div class="chips scroll" role="group" aria-label="Map layers">${L2.map(l=>`<button class="chip" type="button" data-act="layer" data-v="${l[0]}" aria-pressed="${st.layers.has(l[0])}">${I(l[2],'sm')}${l[1]}</button>`).join('')}</div></div>
+  <div class="mapbox grow" id="mapbox"><svg class="bg" viewBox="0 0 390 520" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Lestari map of Yogyakarta with sustainable locations"><defs><filter id="bl"><feGaussianBlur stdDeviation="14"/></filter></defs><rect width="390" height="520" fill="var(--map-land)"/><rect x="250" y="360" width="150" height="170" fill="var(--map-park)"/><path d="M0 430q100-30 190 0t200-30v160H0z" fill="var(--map-water)"/>
+  <g stroke="var(--map-road)" fill="none" stroke-linecap="round"><path d="M0 120L390 200" stroke-width="12"/><path d="M120 0L200 520" stroke-width="12"/><path d="M0 300q120-30 390 40" stroke-width="8"/><path d="M290 0L250 300" stroke-width="7"/><path d="M0 40q100 40 190 90" stroke-width="6"/></g>
+  <g filter="url(#bl)" opacity=".55"><circle cx="150" cy="150" r="60" fill="var(--safe)"/><circle cx="220" cy="240" r="55" fill="var(--fair)"/><circle cx="90" cy="300" r="50" fill="var(--caution)"/><circle cx="300" cy="150" r="40" fill="var(--safe)"/><circle cx="280" cy="330" r="45" fill="var(--caution)"/></g>
+  <circle cx="190" cy="200" r="9" fill="#2563EB" stroke="#fff" stroke-width="3"/></svg>
+  ${Object.entries(pins).filter(([k])=>st.layers.has(k)).map(([k,ps])=>ps.map((p,i)=>`<button class="pin p-${k}" type="button" style="left:${p[0]}%;top:${p[1]}%" data-act="toast" data-v="${L2.find(l=>l[0]===k)?.[1]||k} nearby · ${300+i*350} m" aria-label="${k} ${i+1}">${I(ic[k])}</button>`).join('')).join('')}
+  ${st.layers.has('rep')?REPORTS.map(r=>`<button class="pin p-rep ${r.v==='ver'?'ver':''}" type="button" style="left:${r.x}%;top:${r.y}%" data-go="rd" aria-label="Report: ${r.t}">${I('flag')}</button>`).join(''):''}
+  <div class="sheet" style="${st.sheet?'':'max-height:210px;overflow:hidden'}"><button class="grab" type="button" data-act="sheet" aria-label="${st.sheet?'Collapse':'Expand'} area details" aria-expanded="${st.sheet}"><i></i></button>
+   <div class="row between"><div><h2 class="h2">Malioboro</h2><p class="muted small">Area around the blue dot</p></div><div style="width:128px">${meter(78,{sm:1})}</div></div>
+   <div class="row wrap" style="margin:8px 0">${tbadge(78)}<span class="badge t-mute">${I('users','sm')}Busy</span><span class="badge t-fair">${I('clock','sm')}Drops after 21:00</span></div>
+   <h3 class="h3" style="margin:10px 0 4px">Latest community reports</h3><div class="list">${REPORTS.map(r=>`<button class="li" type="button" data-go="rd"><span class="grow"><b class="small">${r.t}</b><br><span class="muted xs">${r.c} · ${r.ago}</span></span>${vbadge(r.v)}</button>`).join('')}</div>
+   <div class="row" style="margin-top:10px">${btn('Plan trip here','plan1','soft','route')}</div></div></div></div>`}});
+def('rd','D','Report details',{html:()=>`${hdr('Report details')}<div class="pad stack lg">
+  <div class="row wrap"><span class="badge t-caution">${I('trash','sm')}Waste</span>${vbadge('ver')}</div>
+  <h1 class="h1" style="font-size:22px">Overflowing bins at night market</h1>
+  <div class="card stack"><div class="row muted small" style="gap:8px">${I('clock','sm')}<span>Thu, 24 Sep 2026 · 21:14 WIB <b style="color:var(--ink)">(20 hours ago)</b></span></div><div class="row muted small" style="gap:8px">${I('pin','sm')}<span>Near Alun-Alun Kidul (±150 m, location intentionally blurred)</span></div>
+  <p>Bins were full to the point of spilling over the pavement after the night market. Stray plastic going into the drains. If you pass by, bring your own bag for waste and use the refill station at the corner cafe.</p></div>
+  <section class="stack"><h2 class="h2">Verification status</h2><ol class="stepper">${[['Submitted by a community member','24 Sep, 21:14','done'],['Reviewed by a moderator','24 Sep, 22:30','done'],['Confirmed by 2 other reports in the same area','25 Sep, 08:05','done'],['Automatic re-check','26 Sep · reports are treated as outdated after 14 days','']].map((s,i)=>`<li class="${s[2]}"><span class="dot">${s[2]?I('check','sm'):i+1}</span><span><b class="small">${s[0]}</b><br><span class="muted xs">${s[1]}</span></span></li>`).join('')}</ol></section>
+  <div class="note">${I('info')}<span>Community reports are not automatically verified. Status and time are always shown so you can judge for yourself.</span></div>
+  <div class="row">${btn('Helpful','','soft','heart','data-act="toast" data-v="Thanks, report marked as helpful"')}${btn('Report','','ghost','flag','data-act="toast" data-v="Content reported to moderators"')}</div></div>`});
+
+/* E. trips */
+def('trips','E','My Trips',{nav:true,tab:'trips',html:()=>{const T={Active:[['tl','Yogyakarta → Gunungkidul','Today · 16:00–22:00','In progress',74,'bike','brand']],
+  Scheduled:[['td','Yogyakarta → Gunungkidul','Tomorrow, 26 Sep · 17:00–22:00','Scheduled',74,'bike','brand'],['td','Kotagede → Prambanan','Sun, 27 Sep · 07:00–13:00','Scheduled',86,'car','brand']],
+  Completed:[['tdn','Malioboro → Kaliurang','Sat, 19 Sep · 08:00–15:00','Completed',81,'car','mute']]}[st.tripTab];
+  return `<div class="pad stack lg"><div class="row between" style="padding-top:6px"><h1 class="h1">Trips</h1>${btn('New trip','plan1','primary','plus','style="width:auto;min-height:44px"')}</div>
+  <div class="seg" role="group" aria-label="Trip status">${['Active','Scheduled','Completed'].map(t=>`<button type="button" data-act="ttab" data-v="${t}" aria-pressed="${st.tripTab===t}">${t}</button>`).join('')}</div>
+  <div class="stack">${T.map(x=>`<button type="button" class="card stack" data-go="${x[0]}" style="text-align:left"><div class="row between"><span class="badge t-${x[6]}">${x[3]}</span>${tbadge(x[4])}</div><b class="h3">${x[1]}</b><div class="row muted small" style="gap:14px"><span class="row" style="gap:5px">${I('cal','sm')}${x[2]}</span><span>${I(x[5],'sm')}</span></div></button>`).join('')}</div></div>`}});
+def('td','E','Trip details',{html:()=>`${hdr('Trip details')}<div class="pad stack lg">
+  <div class="card stack"><div class="row between"><span class="badge t-brand">${I('cal','sm')}Tomorrow, 26 Sep</span>${tbadge(74)}</div><h1 class="h1" style="font-size:22px">Yogyakarta → Gunungkidul</h1><div class="row muted small" style="gap:14px"><span class="row" style="gap:5px">${I('bike','sm')}Motorbike</span><span class="row" style="gap:5px">${I('user','sm')}Solo</span></div></div>
+  <section class="stack"><h2 class="h2">Itinerary</h2><ol class="stepper">${[['17:00','Depart from Malioboro'],['18:30','Arrive in Wonosari, dinner at a local warung'],['19:15','Indrayanti Beach, sunset and photos'],['20:00','Start heading back (recommended)'],['22:00','Arrive at accommodation (planned limit)']].map((s,i)=>`<li class="${i===3?'now':''}"><span class="dot">${i+1}</span><span><b class="small num">${s[0]}</b><br><span class="small">${s[1]}</span></span></li>`).join('')}</ol></section>
+  <section class="stack"><h2 class="h2">Share with trusted contacts</h2><div class="card list">${[['Ibu Sari','Family',true],['Rara','Close friend',true]].map((c,i)=>`<div class="li"><span class="avatar ${i?'a2':''}">${c[0][0]}</span><span class="grow"><b class="small">${c[0]}</b><br><span class="muted xs">${c[1]} · approved</span></span>${toggle('sh'+i,c[2],'Share with '+c[0])}</div>`).join('')}</div>
+  ${btn('Copy tracking link','','ghost','share','data-act="copy" data-v="lestari.id/t/x7Kq2 (example)"')}</section></div>
+  <div class="sticky-cta">${btn('Start monitoring','tl','primary','shieldc')}</div>`});
+def('tl','E','Trip in progress',{fab:false,html:()=>`${hdr('Trip in progress',{right:reportPill})}<div class="pad stack lg">
+  <div class="mapbox" style="height:230px;border-radius:18px"><svg class="bg" viewBox="0 0 360 230" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Your position on the route to Gunungkidul"><rect width="360" height="230" fill="var(--map-land)"/><path d="M0 190q90-25 170-5t190-25v75H0z" fill="var(--map-water)"/><path d="M30 60Q120 80 190 110T330 170" stroke="var(--line)" stroke-width="7" fill="none" stroke-linecap="round"/><path d="M30 60Q120 80 190 110" stroke="var(--brand)" stroke-width="7" fill="none" stroke-linecap="round"/><circle cx="190" cy="110" r="16" fill="#2563EB" opacity=".22"/><circle cx="190" cy="110" r="8" fill="#2563EB" stroke="#fff" stroke-width="3"/><circle cx="330" cy="170" r="8" fill="var(--ink)" stroke="#fff" stroke-width="3"/></svg></div>
+  <div class="card" style="display:grid;grid-template-columns:1fr 1fr 1fr;text-align:center;gap:6px"><div><span class="muted xs">ETA</span><br><b class="h2 num">18:42</b></div><div><span class="muted xs">Remaining</span><br><b class="h2 num">31 km</b></div><div><span class="muted xs">Check-in</span><br><b class="h2 num">18:30</b></div></div>
+  <div class="note eco">${I('leaf')}<span>You are on the shared-shuttle segment. Impact so far: <b>−1.8 kg CO₂e</b> compared to a private ride.</span></div>
+  ${btn('Check in: I am safe','','primary','check','data-act="toast" data-v="Check-in recorded 18.02. Your contacts have been notified."')}
+  ${btn('Simulate check-in notification','ci','ghost','bell')}${btn('End trip','tdn','link')}
+  <div class="note warn">${I('info')}<span><b>Prototype note:</b> the simulate button replaces real time. In the app, notifications arrive automatically at check-in time.</span></div></div>`});
+def('ci','E','Check-in notification',{fab:false,html:()=>{const steps=[['Notification: "Have you arrived?"','Now'],['Reminder again with vibration','+5 min'],['Trusted contacts are notified','+10 min'],['Trip marked as needing follow-up','+15 min']];
+  return `${hdr('Check-in',{right:reportPill})}<div class="pad stack lg"><div class="card stack" style="align-items:center;text-align:center;padding:24px 16px"><div style="color:var(--brand)">${logo(56)}</div><h1 class="h1">Have you arrived?</h1><p class="muted">You were scheduled to arrive in Wonosari at 18.30. Let us know you are okay.</p></div>
+  ${btn('Yes, I am safe','tl','primary','check','data-act="toast" data-v="Thank you. Your contacts know you are safe."')}${btn('I need 15 more minutes','tl','ghost','clock','data-act="toast" data-v="Check-in postponed to 18:45"')}
+  <section class="stack"><h2 class="h2">If unanswered</h2><ol class="stepper">${steps.map((s,i)=>`<li class="${i<st.esc?'done':i===st.esc?'now':''}"><span class="dot">${i<st.esc?I('check','sm'):i+1}</span><span><b class="small">${s[0]}</b><br><span class="muted xs">${s[1]}</span></span></li>`).join('')}</ol>
+  <button class="btn ghost sm" type="button" data-act="esc" style="align-self:flex-start">Simulate no answer (${st.esc}/4)</button></section></div>`}});
+def('tdn','E','Trip completed',{html:()=>`${hdr('Trip completed',{right:'<span class="hdr-sp"></span>'})}<div class="pad stack lg"><div class="card stack" style="align-items:center;text-align:center;padding:24px 16px">${logo(112)}<h1 class="h1">Trip complete</h1><p class="muted">Your contacts have been notified. Monitoring is off.</p><span class="points-badge">${I('medal','sm')}+80 Lestari Points earned</span></div>
+  <div class="card" style="display:grid;grid-template-columns:1fr 1fr 1fr;text-align:center"><div><b class="h2 num">84 km</b><br><span class="muted xs">Distance</span></div><div><b class="h2 num">−2.4 kg</b><br><span class="muted xs">CO₂e saved</span></div><div><b class="h2 num">3</b><br><span class="muted xs">Challenges</span></div></div>
+  <section class="stack"><h2 class="h2">How was your trip?</h2><p class="muted small">Your short review helps future travelers travel lighter.</p>
+  <div class="row" role="group" aria-label="Trip rating" data-group="stars" id="rate">${[1,2,3,4,5].map(n=>`<button type="button" class="ibtn" data-act="rate" data-v="${n}" aria-label="${n} stars" aria-pressed="false" style="color:var(--gold)">${I('star','lg')}</button>`).join('')}</div>
+  ${chips(['Low-impact route','Sustainable stay','Friendly locals','Great local food','Matched the score'],'many',[])}
+  <div class="field"><label for="rv">Notes (optional)</label><textarea id="rv" placeholder="Any place worth highlighting for other travelers?"></textarea></div></section>
+  ${btn('Submit review','home','primary','','data-act="toast" data-v="Review submitted"')}${btn('Skip','home','link')}</div>`});
+
+/* F. Report Issue (replaces SOS flow) */
+def('report1','F','Report · Category',{fab:false,html:()=>`${hdr('Report an issue',{right:'<span class="hdr-sp"></span>'})}${prog(1)}<div class="pad stack lg">
+  <div class="stack sm"><h1 class="h1">What did you notice?</h1><p class="muted">Help other travelers by reporting environmental or facility issues.</p></div>
+  <div class="stack" role="radiogroup" aria-label="Report category">${REPORT_CATS.map(c=>`<button type="button" class="card row" data-act="rcat" data-v="${c.id}" role="radio" aria-checked="${st.reportCat===c.id}" style="text-align:left;${st.reportCat===c.id?'border:2px solid var(--brand);background:var(--brand-soft)':''}"><span class="ico">${I(c.i)}</span><span class="grow"><b class="small">${c.l}</b></span></button>`).join('')}</div>
+  ${btn('Continue','report2')}</div>`});
+def('report2','F','Report · Details',{fab:false,html:()=>{const c=REPORT_CATS.find(x=>x.id===st.reportCat);return `${hdr('Report details')}${prog(2)}<div class="pad stack lg">
+  <div class="row wrap"><span class="badge t-brand">${I(c.i,'sm')}${c.l}</span></div>
+  ${field('rl','Location',{ic:'pin',v:'Alun-Alun Kidul, Yogyakarta',hint:'Location will be blurred by ±150 m to protect privacy.'})}
+  ${field('rt','Time noticed',{type:'datetime-local',v:'2026-09-26T21:14'})}
+  <div class="field"><label for="rd">Describe what you saw</label><textarea id="rd" placeholder="What is the issue, and what should other travelers do?"></textarea></div>
+  <div class="field"><span class="lbl">Photo (optional)</span><label class="btn ghost" for="ph" style="cursor:pointer">${I('camera')}Add photo</label><input id="ph" type="file" accept="image/*" class="sr"><span class="hint">Do not include other people's faces or license plates.</span></div>
+  <div class="field"><span class="lbl">Severity</span><div class="seg" data-group="one">${['Minor','Moderate','Severe'].map((t,i)=>`<button type="button" data-pick aria-pressed="${i===1}">${t}</button>`).join('')}</div></div>
+  <div class="note gold">${I('medal')}<span>You will earn <b>+40 Lestari Points</b> for a verified report.</span></div>
+  ${btn('Submit report','report3','primary','send')}</div>`}});
+def('report3','F','Report · Submitted',{fab:false,html:()=>`${hdr('Report submitted',{back:false,right:'<span class="hdr-sp"></span>'})}<div class="pad stack lg">
+  <div class="card stack" style="align-items:center;text-align:center;padding:24px 16px">${logo(112)}<h1 class="h1">Thank you!</h1><p class="muted">Your report helps other travelers and the local community.</p><span class="points-badge">${I('medal','sm')}+40 Lestari Points pending review</span></div>
+  <div class="card stack"><div class="row between small"><span class="muted">Status</span><span class="badge t-fair">${I('info','sm')}Unverified</span></div><div class="row between small"><span class="muted">Category</span><b>${(REPORT_CATS.find(x=>x.id===st.reportCat)||{l:'Waste'}).l}</b></div><div class="row between small"><span class="muted">Location</span><b>Blurred ±150 m</b></div></div>
+  <div class="note">${I('info')}<span>A moderator will review your report. It becomes <b>Verified</b> once confirmed by other reports or the moderation team.</span></div>
+  ${btn('Back to home','home','primary')}${btn('View my reports','community','ghost','flag')}</div>`});
+
+/* G. community */
+const postCard=p=>`<button type="button" class="card stack" data-act="post" data-v="${p.id}" style="text-align:left"><div class="row"><span class="avatar ${p.ac}">${p.a}</span><span class="grow"><b class="small">${p.n}</b><br><span class="muted xs">${p.loc} · ${p.t}</span></span></div><div class="row wrap"><span class="badge t-${{warn:'caution',tip:'brand',rec:'plum',trans:'fair'}[p.ct]}">${p.c}</span>${vbadge(p.v)}</div><p class="small">${p.txt}</p><div class="row muted xs" style="gap:14px"><span class="row" style="gap:4px">${I('heart','sm')}${p.h}</span><span class="row" style="gap:4px">${I('msg','sm')}${p.cm}</span></div></button>`;
+def('community','G','Community feed',{nav:true,tab:'community',html:()=>{const cats=['All','Tips','Warnings','Recommendations','Transport','Guide'];const map={Tips:'tip',Warnings:'warn',Recommendations:'rec',Transport:'trans'};
+  const list=POSTS.filter(p=>st.cat==='All'||map[st.cat]===p.ct);
+  return `<div class="pad stack lg"><div class="row between" style="padding-top:6px"><h1 class="h1">Community</h1><button class="btn primary sm" type="button" data-go="pn" style="min-height:44px">${I('plus')}Write</button></div>
+  <div class="row"><button class="chip" type="button" style="flex:none">${I('pin','sm')}Yogyakarta${I('cd','sm')}</button><span class="muted xs">Sustainable travelers only</span></div>
+  <div class="chips scroll" role="group" aria-label="Categories">${cats.map(c=>`<button class="chip" type="button" data-act="cat" data-v="${c}" aria-pressed="${st.cat===c}">${c}</button>`).join('')}</div>
+  <section class="stack"><div class="row between"><h2 class="h2">Find travel buddies</h2><button class="btn link" type="button" data-go="bd">See all</button></div><div class="hscroll">${BUDDIES.map(buddy).join('')}</div></section>
+  <section class="stack"><h2 class="h2">Latest</h2>${list.length?list.map(postCard).join(''):`<div class="card flat" style="text-align:center;padding:26px 14px"><b>No posts in this category yet</b><p class="muted small">Be the first to share.</p></div>`}</section></div>`}});
+const buddy=b=>`<div class="card pcard" style="width:196px"><div class="b" style="gap:8px;padding:14px"><div class="row"><span class="avatar ${b.a}">${b.i}</span><div><b class="small">${b.n}</b><br><span class="muted xs">from ${b.from}</span></div></div><span class="badge t-plum">${I('compass','sm')}${b.tag}</span><span class="small row" style="gap:6px">${I('pin','sm')}${b.to}</span><span class="small row" style="gap:6px">${I('cal','sm')}${b.d} Sep</span>${btn('Invite','','soft','','data-act="toast" data-v="Request sent to '+b.n+'"').replace('class="btn soft"','class="btn soft sm"')}</div></div>`;
+def('bd','G','Travel buddy',{html:()=>`${hdr('Travel buddies')}<div class="pad stack lg"><div class="note eco">${I('leaf')}<span>Pair up for lower-impact travel: shared rides, split meals, and safer routes after dark.</span></div><div class="stack">${BUDDIES.map(b=>buddy(b).replace('pcard" style="width:196px"','pcard" style="width:auto"')).join('')}</div></div>`});
+def('pd','G','Post details',{html:()=>{const p=POSTS.find(x=>x.id===st.post)||POSTS[0];return `${hdr('Post')}<div class="pad stack lg"><div class="card stack"><div class="row"><span class="avatar ${p.ac}">${p.a}</span><span class="grow"><b class="small">${p.n}</b><br><span class="muted xs">${p.loc} · ${p.t}</span></span></div><div class="row wrap"><span class="badge t-${{warn:'caution',tip:'brand',rec:'plum',trans:'fair'}[p.ct]}">${p.c}</span>${vbadge(p.v)}</div><p>${p.txt}</p><div class="row muted xs">${btn('Helpful ('+p.h+')','','soft','heart','data-act="toast" data-v="Marked as helpful"').replace('class="btn soft"','class="btn soft sm"')}${btn('Report','','ghost','flag','data-act="toast" data-v="Reported to moderators"').replace('class="btn ghost"','class="btn ghost sm"')}</div></div>
+  <h2 class="h2">Comments (${p.cm})</h2><div class="stack">${[['SP','Agreed, I saw the same thing yesterday.','a3'],['MK','Thanks for the tip, I will bring my own bag next time.','a2']].map(c=>`<div class="row" style="align-items:flex-start"><span class="avatar ${c[2]}" style="width:36px;height:36px;font-size:12px">${c[0]}</span><div class="card flat grow" style="padding:10px 12px"><p class="small">${c[1]}</p></div></div>`).join('')}</div>
+  <div class="row"><div class="field grow"><label class="sr" for="cm">Write a comment</label><input id="cm" placeholder="Write a comment"></div><button class="ibtn solid" type="button" data-act="toast" data-v="Comment sent" aria-label="Send">${I('send')}</button></div></div>`}});
+def('pn','G','Create post',{html:()=>`${hdr('Create post')}<div class="pad stack lg"><div class="seg" data-group="one"><button type="button" data-pick aria-pressed="true">Regular post</button><button type="button" data-pick aria-pressed="false">Safety report</button></div>
+  <div class="field"><span class="lbl">Category</span>${chips(['Tips','Warning','Recommendation','Transport','Guide'],'one',[1])}</div>
+  ${field('pl','Location',{ic:'pin',v:'Alun-Alun Kidul',hint:'Location will be blurred by ±150 m to protect your privacy.'})}${field('pw2','Time',{type:'datetime-local',v:'2026-09-24T21:14'})}
+  <div class="field"><label for="tx">Tell us what happened</label><textarea id="tx" placeholder="What happened, and what should others do?"></textarea></div>
+  <div class="field"><span class="lbl">Photo (optional)</span><label class="btn ghost" for="ph" style="cursor:pointer">${I('camera')}Add photo</label><input id="ph" type="file" accept="image/*" class="sr"><span class="hint">Do not include other people's faces or license plates.</span></div>
+  <div class="note">${I('info')}<span>Reports stay <b>Unverified</b> until a moderator reviews them or other reports confirm them.</span></div>
+  ${btn('Submit post','community','primary','send','data-act="toast" data-v="Post submitted for review"')}</div>`});
+
+/* H. guide */
+def('guides','H','Guide list',{nav:true,tab:'home',html:()=>`<div class="pad stack lg"><div class="row between" style="padding-top:6px"><div><h1 class="h1">Green guides</h1><p class="muted small">All verified · sample data</p></div><span class="hdr-sp"></span></div>
+  <div class="chips scroll" role="group" aria-label="Service filter">${['All services','City tour','Culture','Airport','Night travel','Hiking'].map((c,i)=>`<button class="chip" type="button" data-pick aria-pressed="${i===0}">${c}</button>`).join('')}</div>
+  <div class="row"><button class="chip">${I('globe','sm')}Language${I('cd','sm')}</button><button class="chip">${I('tag','sm')}Price${I('cd','sm')}</button><button class="chip">${I('star','sm')}Rating 4.5+</button></div>
+  <div class="stack">${GUIDES.map(g=>`<button type="button" class="card stack" data-act="guide" data-v="${g.id}" style="text-align:left"><div class="row"><span class="avatar ${g.a}">${g.i}</span><span class="grow"><b>${g.n}</b><br><span class="muted xs">${g.tag}</span></span><span class="badge t-plum">${g.m}% match</span></div><div class="row wrap"><span class="badge t-safe">${I('leaf','sm')}Green Ambassador</span><span class="badge t-safe">${I('shieldc','sm')}Verified</span>${g.svc.map(s=>`<span class="badge t-mute">${s}</span>`).join('')}</div><div class="row between small"><span class="row" style="gap:6px">${stars(5)}<b class="num">${g.r}</b><span class="muted">(${g.rv})</span></span><span>from <b class="num">${rp(g.p)}</b></span></div></button>`).join('')}</div></div>`});
+const G_=()=>GUIDES.find(g=>g.id===st.guide)||GUIDES[0];
+def('gp','H','Guide profile',{html:()=>{const g=G_();return `${hdr('Guide profile')}<div class="pad stack lg">
+  <div class="card stack" style="align-items:center;text-align:center"><span class="avatar lg ${g.a}">${g.i}</span><div><h1 class="h1" style="font-size:22px">${g.n}</h1><p class="muted small">${g.tag}</p></div><div class="row wrap" style="justify-content:center"><span class="badge t-safe">${I('leaf','sm')}Green Tourism Ambassador</span><span class="badge t-safe">${I('shieldc','sm')}Verified</span><span class="badge t-plum">${I('spark','sm')}${g.m}% match</span></div><div class="row small" style="gap:6px">${stars(5)}<b class="num">${g.r}</b><span class="muted">${g.rv} reviews</span></div></div>
+  <p>${g.bio}</p><div class="note eco">${I('spark')}<span>A good match because you are a <b>Calm Explorer</b>: culture, slow pace, low-impact routes.</span></div>
+  <section class="stack"><h2 class="h2">Verification</h2><div class="card stack">${['Official ID checked','Lestari Green Tourism Ambassador training','Leave-No-Trace certification','Two references from travelers'].map(x=>`<div class="row small">${I('check','sm')}${x}</div>`).join('')}</div></section>
+  <section class="stack"><h2 class="h2">Services</h2><div class="card list">${g.svc.map((s,i)=>`<div class="li"><span class="grow"><b class="small">${s}</b><br><span class="muted xs">${i?'3–4 hours':'2–3 hours'} · ${g.lang}</span></span><b class="num small">${rp(g.p+i*50000)}</b></div>`).join('')}</div></section>
+  <section class="stack"><h2 class="h2">Reviews</h2>${[['Hana, Japan','Ratri made me feel comfortable and showed me how to travel lighter in Kotagede. The route was walkable and she was very patient.'],['Sofia, Spain','Her explanations were rich and unhurried. She brought a spare water bottle for me.']].map(r=>`<div class="card stack"><div class="row between"><b class="small">${r[0]}</b>${stars(5)}</div><p class="small">${r[1]}</p></div>`).join('')}</section></div>
+  <div class="sticky-cta">${btn('Book '+g.n.split(' ')[0],'bk','primary','cal')}</div>`}});
+const SV=()=>G_().svc.map((s,i)=>({n:s,p:G_().p+i*50000}));
+def('bk','H','Booking',{html:()=>{const sv=SV();return `${hdr('Booking')}<div class="pad stack lg"><div class="row"><span class="avatar ${G_().a}">${G_().i}</span><div><b>${G_().n}</b><br><span class="muted xs">${G_().tag}</span></div></div>
+  <div class="stack"><span class="lbl">Choose a service</span>${sv.map((s,i)=>`<button type="button" class="card row" data-act="svc" data-v="${i}" role="radio" aria-checked="${st.svc===i}" style="text-align:left;${st.svc===i?'border:2px solid var(--brand);background:var(--brand-soft)':''}"><span class="grow"><b class="small">${s.n}</b><br><span class="muted xs">${i?'3–4 hours':'2–3 hours'}</span></span><b class="num small">${rp(s.p)}</b></button>`).join('')}</div>
+  <div class="row" style="align-items:flex-start"><div class="grow">${field('bd1','Date',{type:'date',v:'2026-09-27'})}</div><div class="grow">${field('bt','Start time',{type:'time',v:'09:00'})}</div></div>
+  <div class="field"><label for="bn">Notes for the guide</label><textarea id="bn" placeholder="For example: I prefer walkable routes and low-impact food stops."></textarea></div>
+  <div class="card stack"><div class="row between small"><span>${sv[st.svc].n}</span><b class="num">${rp(sv[st.svc].p)}</b></div><div class="row between small"><span class="muted">Service fee (8%)</span><span class="num">${rp(Math.round(sv[st.svc].p*.08))}</span></div><hr style="border:0;border-top:1px solid var(--line);width:100%"><div class="row between"><b>Total</b><b class="num h3">${rp(Math.round(sv[st.svc].p*1.08))}</b></div></div></div>
+  <div class="sticky-cta">${btn('Continue to payment','pay')}</div>`}});
+def('pay','H','Payment',{html:()=>{const tot=Math.round(SV()[st.svc].p*1.08);const M=[['qr','QRIS','All e-wallets and mobile banking'],['card','Debit / credit card','Visa, Mastercard'],['bag','E-wallet','GoPay, OVO, DANA'],['tag','Virtual account','BCA, Mandiri, BNI']];
+  return `${hdr('Payment')}<div class="pad stack lg"><div class="card row between"><span class="muted">Total</span><b class="h1 num" style="font-size:24px">${rp(tot)}</b></div>
+  <div class="stack" role="radiogroup" aria-label="Payment method"><span class="lbl">Method</span>${M.map((m,i)=>`<button type="button" class="card row" data-act="pay" data-v="${i}" role="radio" aria-checked="${st.pay===i}" style="text-align:left;${st.pay===i?'border:2px solid var(--brand);background:var(--brand-soft)':''}"><span class="ico" style="background:var(--surface-2)">${I(m[0])}</span><span class="grow"><b class="small">${m[1]}</b><br><span class="muted xs">${m[2]}</span></span></button>`).join('')}</div>
+  <div class="note">${I('lock')}<span>Funds are held by Lestari and only passed to the guide after the service is completed.</span></div></div>
+  <div class="sticky-cta">${btn('Pay '+rp(tot),'bdone','primary','lock')}</div>`}});
+def('bdone','H','Booking confirmed',{html:()=>`${hdr('Booking',{right:'<span class="hdr-sp"></span>',back:false})}<div class="pad stack lg"><div class="card stack" style="align-items:center;text-align:center;padding:24px 16px">${logo(112)}<h1 class="h1">Booking confirmed</h1><p class="muted">${G_().n} will meet you at the agreed spot. Booking code:</p><b class="h1 num" style="letter-spacing:.08em">LS-4K82</b></div>
+  <div class="card list"><div class="li"><span class="ico">${I('cal')}</span><span class="grow"><b class="small">Sun, 27 Sep · 09:00</b><br><span class="muted xs">${SV()[st.svc].n}</span></span></div></div>
+  ${btn('Chat with '+G_().n.split(' ')[0],'chat','primary','msg')}${btn('Share with trusted contacts','','ghost','share','data-act="toast" data-v="Booking details shared with Ibu Sari and Rara"')}${btn('Add to trip','trips','ghost','bag')}${btn('Leave a review (after the service)','rev','link')}</div>`});
+def('chat','H','Chat guide',{html:()=>`${hdr(G_().n.split(' ')[0])}<div class="pad stack" style="min-height:calc(100% - 60px)"><div class="note">${I('lock')}<span>Keep chatting here. Do not share payment details or move to another app.</span></div>
+  <div class="stack" style="flex:1">${[['g','Hi Nadia! I am Ratri, your guide on Sunday. Is there a place you want to prioritize?'],['u','Hi Ratri! I would like to visit Kotagede and eat at a women-run warung.'],['g','Sure. We start at 09:00 in front of the hotel. Bring your own bottle — I will show you two refill stations along the way.']].map(m=>`<div style="align-self:${m[0]==='u'?'flex-end':'flex-start'};max-width:80%;background:${m[0]==='u'?'var(--brand)':'var(--surface)'};color:${m[0]==='u'?'var(--brand-ink)':'var(--ink)'};border:1px solid var(--line);border-radius:16px;padding:10px 14px" class="small">${m[1]}</div>`).join('')}</div>
+  <div class="row"><div class="field grow"><label class="sr" for="cmsg">Message</label><input id="cmsg" placeholder="Write a message"></div><button class="ibtn solid" type="button" data-act="toast" data-v="Message sent" aria-label="Send">${I('send')}</button></div></div>`});
+def('rev','H','Review guide',{html:()=>`${hdr('Guide review')}<div class="pad stack lg"><div class="row"><span class="avatar ${G_().a}">${G_().i}</span><div><b>${G_().n}</b><br><span class="muted xs">Sun, 27 Sep · ${SV()[st.svc].n}</span></div></div>
+  <div class="stack sm"><span class="lbl">Overall rating</span><div class="row" role="group" aria-label="Rating">${[1,2,3,4,5].map(n=>`<button type="button" class="ibtn" data-act="rate" data-v="${n}" aria-label="${n} stars" aria-pressed="false" style="color:var(--gold)">${I('star','lg')}</button>`).join('')}</div></div>
+  <div class="field"><span class="lbl">What stood out</span>${chips(['Sustainable practices','Low-impact route','On time','Great insights'],'many',[])}</div>
+  <div class="field"><label for="rt">Tell us about your experience</label><textarea id="rt"></textarea></div>${btn('Submit review','home','primary','','data-act="toast" data-v="Review submitted. Thank you!"')}</div>`});
+
+/* NEW TAB — Score dashboard */
+def('score','J','Sustainability Score',{nav:true,tab:'score',html:()=>{const o=overall();const done=st.challenges.filter(c=>c.done).length;
+  return `<div class="pad stack lg">
+  <div class="row between" style="padding-top:6px"><h1 class="h1">Your impact</h1><button class="ibtn solid" type="button" data-act="toast" data-v="Impact report opened (example)" aria-label="Share impact">${I('share')}</button></div>
+  <section class="score-hero" aria-label="Average sustainability score"><div class="row between"><span class="eyebrow" style="color:rgba(255,255,255,.9)">${I('spark','sm')}Avg. sustainability score · this month</span></div><div class="row between" style="align-items:flex-end;margin-top:6px"><b class="score-n num">${o}</b><span style="opacity:.85;font-weight:800">/100</span></div><p class="small" style="opacity:.95;margin-top:6px">${tier(o).l}. You are in the top 18% of travelers in Yogyakarta.</p></section>
+  <div class="row" style="gap:10px"><div class="card grow" style="text-align:center"><span class="points-badge">${I('medal','sm')}${st.points.toLocaleString()}</span><p class="muted xs" style="margin-top:6px">Lestari Points</p></div><div class="card grow" style="text-align:center"><b class="h2 num">−12.4 kg</b><p class="muted xs" style="margin-top:6px">CO₂e saved</p></div></div>
+  <section class="stack"><div class="row between"><h2 class="h2">This month's breakdown</h2></div>${factors().map(f=>{const tt=tier(f[1]);return `<div class="frow t-${tt.k}"><span class="nm">${f[0]}</span><span class="val num" style="color:var(--t)">${f[1]}</span><div class="bar" role="img" aria-label="${f[0]} ${f[1]} out of 100"><i style="width:${f[1]}%"></i></div></div>`}).join('')}</section>
+  <section class="stack"><div class="row between"><h2 class="h2">Green challenges</h2><span class="muted small">${done}/${st.challenges.length} done</span></div><div class="stack">${st.challenges.map((c,i)=>`<button type="button" class="challenge ${c.done?'done':''}" data-act="challenge" data-v="${i}" aria-pressed="${c.done}"><span class="chk">${c.done?I('check','sm'):I('plus','sm')}</span><span class="grow"><b class="small">${c.t}</b><br><span class="muted xs">+${c.p} Lestari Points</span></span>${c.done?`<span class="badge t-safe">${I('check','sm')}Done</span>`:I('cr','sm')}</button>`).join('')}</div></section>
+  <section class="stack"><h2 class="h2">Redeem your points</h2><div class="card list">${[['local','Voucher UMKM lokal','500 pts · Batik Kotagede'],['stay','Green stay discount','800 pts · 10% off verified hotels'],['leaf','Plant a tree in your name','1,000 pts · partner reforestation']].map(p=>`<div class="li"><span class="ico">${I(p[0])}</span><span class="grow"><b class="small">${p[1]}</b><br><span class="muted xs">${p[2]}</span></span>${st.points>=parseInt(p[2])?I('cr','sm'):`<span class="badge t-mute">${I('lock','sm')}Locked</span>`}</div>`).join('')}</div></section>
+  <button type="button" class="card row" data-go="wr" style="text-align:left;background:var(--g-hero);border-color:transparent;color:#fff"><span class="grow"><b>Lestari Wrapped 2026</b><br><span class="small" style="opacity:.85">Your year in sustainable travel →</span></span>${I('spark','lg')}</button>
+  <p class="muted xs" style="text-align:center">Scores are estimates based on available data. They support your decisions, they are not a guarantee.</p></div>`}});
+
+/* I. profile */
+def('profile','I','Profile',{nav:true,tab:'',html:()=>`<div class="pad stack lg"><div class="row" style="padding-top:8px;gap:14px"><span class="avatar lg">N</span><div class="grow"><h1 class="h1" style="font-size:22px">Nadia</h1><p class="muted small">Indonesia · Culture backpacker</p><span class="badge t-plum" style="margin-top:6px">${I('leaf','sm')}Calm Explorer</span></div></div>
+  <button type="button" class="card row" data-go="sub" style="text-align:left;background:var(--brand-soft);border-color:transparent"><span class="ico" style="width:44px;height:44px;background:var(--brand);color:var(--brand-ink)">${I('crown')}</span><span class="grow"><b>Free plan</b><br><span class="muted small">Unlock advanced analysis with Lestari Premium</span></span>${I('cr','sm')}</button>
+  <button type="button" class="card row" data-go="wr" style="text-align:left;background:var(--g-hero);border-color:transparent;color:#fff"><span class="grow"><b>Lestari Wrapped 2026</b><br><span class="small" style="opacity:.85">7 destinations · 23 sustainable actions · 6 local businesses</span></span>${I('spark','lg')}</button>
+  <div class="card list">${li('user','Personal details & preferences','Profile and travel style','pe')}${li('users','Trusted contacts','2 active contacts','ct')}${li('hist','Trip & booking history','','hs')}${li('sliders','Settings','Language, privacy, notifications','set')}</div></div>`});
+def('pe','I','Personal details',{html:()=>`${hdr('Personal details')}<div class="pad stack lg">${field('e1','Nickname',{v:'Nadia'})}${field('e2','Age',{type:'number',v:'26'})}<div class="field"><span class="lbl">Language</span>${chips(['Indonesian','English','Chinese','Korean'],'many',[0,1])}</div><div class="field"><span class="lbl">Traveler type</span>${chips(['Backpacker','Culture & history','Nature & hiking','Food'],'one',[1])}</div><div class="field"><span class="lbl">Sustainability preferences</span>${chips(['Avoid single-use plastic','Prefer local businesses','Choose low-emission transport','Support community tourism'],'many',[0,1,2,3])}</div>${btn('Save','profile','primary','','data-act="toast" data-v="Changes saved"')}</div>`});
+def('ct','I','Manage contacts',{html:()=>`${hdr('Trusted contacts')}<div class="pad stack lg"><div class="card list">${[['Ibu Sari','Family','Active',1],['Rara','Close friend','Active',2],['Bima','Friend','Awaiting approval',0]].map((c,i)=>`<div class="li"><span class="avatar ${['','a2','a3'][i]}">${c[0][0]}</span><span class="grow"><b class="small">${c[0]}</b><br><span class="muted xs">${c[1]}</span></span><span class="badge t-${c[3]?'safe':'fair'}">${c[2]}</span></div>`).join('')}</div>
+  <div class="note">${I('info')}<span>Contacts <b>awaiting approval</b> do not yet receive your location or trip updates.</span></div>${btn('Add contact','','ghost','plus','data-act="toast" data-v="New contact form (example)"')}</div>`});
+def('sub','I','Subscription',{html:()=>`${hdr('Subscription')}<div class="pad stack lg" style="padding-bottom:20px"><div class="stack sm"><h1 class="h1">Travel lighter, together</h1><p class="muted">Choose the plan that fits how often you travel.</p></div>
+  <div class="note warn">${I('info')}<span>Prices below are examples for the prototype and are not final.</span></div>
+  ${[['Free','Rp0','',['Basic sustainability score','Basic Lestari Map','Community access','Green challenges'],0],['Premium','Rp39,000','/month',['Advanced AI recommendations','Detailed sustainability assessment','Advanced route planning','Full Travel DNA','Premium green challenges','Exclusive rewards'],1],['Travel Pass','Rp29,000','/trip',['All Premium features for one trip','Great for a one-off holiday'],0]].map(p=>`<div class="card stack" style="${p[4]?'border:2px solid var(--brand)':''}"><div class="row between"><b class="h2">${p[0]}</b>${p[4]?'<span class="badge t-brand">Most popular</span>':p[0]==='Free'?'<span class="badge t-mute">Your plan</span>':''}</div><div><b class="num" style="font:700 30px var(--display)">${p[1]}</b><span class="muted small">${p[2]}</span></div><div class="stack sm">${p[3].map(f=>`<div class="row small" style="gap:8px;align-items:flex-start">${I('check','sm')}<span>${f}</span></div>`).join('')}</div>${p[0]==='Free'?'':btn('Choose '+p[0],'','primary','','data-act="toast" data-v="Payment opened (example)"').replace('btn primary',p[4]?'btn primary':'btn soft')}</div>`).join('')}<p class="muted xs" style="text-align:center">Core features like trip tracking, trusted contacts, and community reports are always free.</p></div>`});
+def('hs','I','History',{html:()=>`${hdr('History')}<div class="pad stack lg"><div class="seg" data-group="one"><button type="button" data-pick aria-pressed="true">Trip</button><button type="button" data-pick aria-pressed="false">Booking</button></div><div class="card list">${[['Malioboro → Kaliurang','19 Sep 2026','81'],['Yogyakarta → Borobudur','06 Sep 2026','86'],['Kotagede on foot','29 Aug 2026','88']].map(h=>`<button class="li" type="button" data-go="tdn"><span class="ico">${I('route')}</span><span class="grow"><b class="small">${h[0]}</b><br><span class="muted xs">${h[1]}</span></span>${tbadge(+h[2])}</button>`).join('')}</div></div>`});
+const WR=[
+ ()=>`<p class="eyebrow" style="color:var(--brand-strong)">Lestari Wrapped</p><h1 class="big" style="font-size:54px">Your year of travel, Nadia.</h1><p style="font-size:17px;opacity:.9">A recap of your sustainable journeys in 2026.</p>`,
+ ()=>`<p class="eyebrow" style="color:var(--brand-strong)">You explored</p><div><div class="stat"><b>8</b><span>destinations</span></div><div class="stat"><b>23</b><span>sustainable actions</span></div><div class="stat"><b>18</b><span>km walked</span></div></div>`,
+ ()=>`<p class="eyebrow" style="color:var(--brand-strong)">Businesses supported</p><h1 class="big">6</h1><p style="font-size:17px;opacity:.9">local businesses · 3 local guides booked. Your choices put money back into the community.</p>`,
+ ()=>`<p class="eyebrow" style="color:var(--brand-strong)">Your impact</p><div><div class="stat"><b>−12.4</b><span>kg CO₂e saved</span></div><div class="stat"><b>84</b><span>avg. sustainability score</span></div></div>`,
+ ()=>`<p class="eyebrow" style="color:var(--brand-strong)">Your travel personality</p><h1 class="big" style="font-size:52px">The Conscious Explorer</h1><p style="font-size:17px;opacity:.9">You like culture, unhurried time, and light-footprint routes.</p>`];
+def('wr','I','Lestari Wrapped',{tone:'story',fab:false,html:()=>`<div class="story"><svg class="mascot" width="170" height="170" viewBox="0 0 100 100" aria-hidden="true" style="position:absolute;right:-24px;bottom:110px;opacity:.28"><use href="#i-logo"/></svg><div class="bars" role="img" aria-label="Slide ${st.story+1} of 5">${WR.map((_,i)=>`<i class="${i<=st.story?'on':''}"></i>`).join('')}</div><div class="row between" style="padding:8px 0"><span class="small" style="opacity:.8">2026</span><button class="ibtn" type="button" data-go="profile" aria-label="Close">${I('x')}</button></div>
+  <div class="body">${WR[st.story]()}</div><div class="stack" style="gap:10px">${st.story===4?btn('See 3 matching guides','guides','primary','users'):''}<div class="row">${btn('Previous','','ghost','cl','data-act="story" data-v="-1"'+(st.story===0?' disabled':''))}${st.story<4?btn('Next','','primary','cr','data-act="story" data-v="1"'):btn('Share','','ghost','share','data-act="toast" data-v="Wrapped card copied (example)"')}</div></div></div>`});
+def('set','I','Settings',{html:()=>`${hdr('Settings')}<div class="pad stack lg"><section class="stack"><h2 class="h2">General</h2><div class="card list"><div class="li"><span class="ico">${I('globe')}</span><span class="grow"><b class="small">Language</b><br><span class="muted xs">English</span></span>${I('cr','sm')}</div>
+  </div></section>
+  <section class="stack"><h2 class="h2">Privacy & impact</h2><div class="card list"><div class="li"><span class="grow"><b class="small">Share location with contacts during trips</b></span>${toggle('s1',true,'Share location during trips')}</div><div class="li"><span class="grow"><b class="small">Send reports anonymously</b></span>${toggle('s2',true,'Anonymous reports')}</div><div class="li"><span class="grow"><b class="small">Blur report location (±150 m)</b></span>${toggle('s3',true,'Blur location')}</div><div class="li"><span class="grow"><b class="small">Show my impact on my public profile</b></span>${toggle('s7',false,'Public impact')}</div></div></section>
+  <section class="stack"><h2 class="h2">Notifications</h2><div class="card list"><div class="li"><span class="grow"><b class="small">Check-in reminders</b></span>${toggle('s4',true,'Check-in reminders')}</div><div class="li"><span class="grow"><b class="small">Impact alerts in your area</b></span>${toggle('s5',true,'Impact alerts')}</div><div class="li"><span class="grow"><b class="small">Promotions and news</b></span>${toggle('s6',false,'Promotions')}</div></div></section>
+  ${btn('Log out','splash','ghost','logout')}</div>`});
+
+/* ---------- engine ---------- */
+const FLOWS={A:'A · Onboarding & Auth',B:'B · Home',C:'C · Plan Trip / AI',D:'D · Lestari Map',E:'E · Trip Monitoring',F:'F · Report Issue',G:'G · Community',H:'H · Guide',I:'I · Profile & Wrapped',J:'J · Score Dashboard'};
+const NAV=[['home','home','Home'],['plan1','route','Plan'],['score','leaf','Score'],['community','users','Community'],['trips','bag','Trip']];
+function buildIndex(){let h=`<h2>Lestari</h2><p class="sub">Clickable prototype · all sample data.</p>`;
+  Object.keys(FLOWS).forEach(f=>{h+=`<h3>${FLOWS[f]}</h3><div class="links">${Object.values(S).filter(s=>s.flow===f).map(s=>`<button type="button" data-jump="${s.id}" aria-current="${s.id===st.cur}">${s.name}</button>`).join('')}</div>`});$('#index').innerHTML=h}
+function buildTabs(){const cur=S[st.cur].tab;$('#tabbar').innerHTML=NAV.map(([g,ic,l])=>{const c=g==='score',on=g==='plan1'?cur==='plan':cur===g;return `<button class="tab ${c?'score':''}" type="button" data-go="${g}" ${on?'aria-current="page"':''}>${c?`<span class="pl">${I(ic,'lg')}</span>`:I(ic,'lg')}<span>${l}</span></button>`}).join('')}
+function render(keep){const s=S[st.cur],v=$('#view'),y=keep?v.scrollTop:0;v.innerHTML=s.html();$('#tabbar').hidden=!s.nav;$('#fab').hidden=!(s.fab);$('#phone').dataset.tone=s.tone||'';if(s.nav)buildTabs();v.scrollTop=y;s.after&&s.after();document.querySelectorAll('[data-jump]').forEach(b=>b.setAttribute('aria-current',b.dataset.jump===st.cur))}
+function go(id,o={}){if(!S[id])return;clearT();if(!o.replace&&!o.noHist)st.hist.push(st.cur);if(S[id].nav&&!o.keepHist&&NAV.some(n=>n[0]===id))st.hist=[];st.cur=id;if(id==='ci')st.esc=0;if(id==='wr')st.story=0;if(id==='report1')st.reportCat='waste';render();$('#view').focus({preventScroll:true})}
+function back(){clearT();const p=st.hist.pop();st.cur=p||'home';render();}
+function toast(m){const h=$('#toastHost');h.innerHTML=`<div class="toast" role="status">${I('check','sm')}<span>${m}</span></div>`;clearTimeout(toast.t);toast.t=setTimeout(()=>h.innerHTML='',2600)}
+function setTheme(t){st.theme=t==='auto'?null:t;const r=document.documentElement;if(st.theme)r.dataset.theme=st.theme;else r.removeAttribute('data-theme');try{localStorage.setItem('ls-theme',t)}catch(e){}}
+document.addEventListener('click',e=>{
+  const j=e.target.closest('[data-jump]');if(j){st.hist=[];go(j.dataset.jump,{noHist:true});$('#index').classList.remove('open');return}
+  if(e.target.closest('#idxBtn')){$('#index').classList.toggle('open');return}
+  const b=e.target.closest('[data-back]');if(b){back();return}
+  const a=e.target.closest('[data-act]');
+  if(a){const v=a.dataset.v,k=a.dataset.act;
+    if(k==='toast'){toast(v);if(a.dataset.go)go(a.dataset.go);return}
+    if(k==='copy'){try{navigator.clipboard.writeText(v).then(()=>toast('Link copied'),()=>toast('Press and hold to copy: '+v))}catch(er){toast(v)}return}
+    if(k==='authtab'){st.authTab=v;render(true);return}
+    if(k==='showpw'){const p=$('#pw');p.type=p.type==='password'?'text':'password';a.textContent=p.type==='password'?'Show password':'Hide password';return}
+    if(k==='ret'){st.ret=v;render(true);return}
+    if(k==='view'){st.view=v;render(true);return}
+    if(k==='layer'){st.layers.has(v)?st.layers.delete(v):st.layers.add(v);render(true);return}
+    if(k==='sheet'){st.sheet=!st.sheet;render(true);return}
+    if(k==='ttab'){st.tripTab=v;render(true);return}
+    if(k==='esc'){st.esc=Math.min(4,st.esc+1);render(true);return}
+    if(k==='cat'){st.cat=v;render(true);return}
+    if(k==='post'){st.post=v;go('pd');return}
+    if(k==='guide'){st.guide=v;go('gp');return}
+    if(k==='svc'){st.svc=+v;render(true);return}
+    if(k==='pay'){st.pay=+v;render(true);return}
+    if(k==='story'){st.story=Math.max(0,Math.min(4,st.story+ +v));render(true);return}
+    if(k==='rcat'){st.reportCat=v;render(true);return}
+    if(k==='challenge'){const i=+v;st.challenges[i].done=!st.challenges[i].done;if(st.challenges[i].done)st.points+=st.challenges[i].p;else st.points-=st.challenges[i].p;render(true);toast(st.challenges[i].done?'Challenge complete! +'+st.challenges[i].p+' points':'Challenge reset');return}
+    if(k==='rate'){a.parentElement.querySelectorAll('[data-act=rate]').forEach(x=>{const on=+x.dataset.v<=+v;x.setAttribute('aria-pressed',x===a);x.querySelector('.ic').style.fill=on?'currentColor':'none'});return}
+    if(k==='theme'){setTheme(v==='next'?((st.theme||'auto')==='dark'?'light':'dark'):v);if(st.cur==='set')render(true);return}
+  }
+  const p=e.target.closest('[data-pick]');
+  if(p){const g=p.closest('[data-group]');if(g){if(g.dataset.group==='many')p.setAttribute('aria-pressed',p.getAttribute('aria-pressed')!=='true');else g.querySelectorAll('[data-pick]').forEach(x=>x.setAttribute('aria-pressed',x===p))}return}
+  const t=e.target.closest('[data-toggle]');if(t){t.setAttribute('aria-checked',t.getAttribute('aria-checked')!=='true');return}
+  const g=e.target.closest('[data-go]');if(g){go(g.dataset.go);return}
+});
+try{const t=localStorage.getItem('ls-theme');if(t&&t!=='auto')setTheme(t)}catch(e){}
+buildIndex();render();
+</script>
